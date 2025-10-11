@@ -41,6 +41,7 @@ pub struct Directive {
     /// A description of the directive
     pub description: Option<String>,
     /// Any arguments that can be provided to the directive
+    #[arguments(#[feature = "2025"] includeDeprecated: true)]
     pub args: Vec<InputValue>,
     /// The locations where the directive may be used
     pub locations: Vec<DirectiveLocation>,
@@ -109,6 +110,7 @@ pub struct Field {
     /// A description of the field
     pub description: Option<String>,
     /// A list of arguments this field accepts.
+    #[arguments(#[feature = "2025"] includeDeprecated: true)]
     pub args: Vec<InputValue>,
     /// The type of value returned by this field
     #[cynic(rename = "type")]
@@ -132,6 +134,12 @@ pub struct InputValue {
     pub ty: FieldType,
     /// An optional default value for this field, represented as a GraphQL literal
     pub default_value: Option<String>,
+    #[cynic(feature = "2025")]
+    /// Whether this field is deprecated and should no longer be used.
+    pub is_deprecated: bool,
+    #[cynic(feature = "2025")]
+    /// Optionally provides a reason why this field is deprecated
+    pub deprecation_reason: Option<String>,
 }
 
 #[derive(cynic::QueryFragment, Debug)]

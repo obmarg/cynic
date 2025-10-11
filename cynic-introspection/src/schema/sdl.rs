@@ -324,13 +324,14 @@ impl Display for InputValueDisplay<'_> {
             description,
             ty,
             default_value,
+            deprecated,
         } = self.0;
         write!(f, "{}", DescriptionDisplay(description.as_deref()))?;
         write!(f, "{name}: {}", FieldTypeDisplay(ty))?;
         if let Some(default_value) = default_value {
             write!(f, " = {}", default_value)?;
         }
-        Ok(())
+        write!(f, "{}", DeprecatedDisplay(deprecated))
     }
 }
 

@@ -39,6 +39,10 @@ pub struct CapabilitiesQuery {
     #[cynic(rename = "__type")]
     #[arguments(name: "__Type")]
     type_type: Option<Type>,
+
+    #[cynic(rename = "__type")]
+    #[arguments(name: "__InputValue")]
+    input_value_type: Option<Type>,
 }
 
 impl CapabilitiesQuery {
@@ -50,7 +54,9 @@ impl CapabilitiesQuery {
     }
 
     fn version_supported(&self) -> SpecificationVersion {
-        let Some(type_type) = &self.type_type else {
+        let Some((type_type, input_value_type)) =
+            self.type_type.as_ref().zip(self.input_value_type.as_ref())
+        else {
             return SpecificationVersion::Unknown;
         };
 
@@ -59,12 +65,12 @@ impl CapabilitiesQuery {
             .iter()
             .find(|field| field.name == "specifiedByURL");
 
-        let one_of_field = type_type
+        let input_value_deprecation = input_value_type
             .fields
             .iter()
-            .find(|field| field.name == "isOneOf");
+            .find(|field| field.name == "isDeprecated");
 
-        match (one_of_field, specified_by_field) {
+        match (input_value_deprecation, specified_by_field) {
             (Some(_), _) => SpecificationVersion::September2025,
             (None, Some(_)) => SpecificationVersion::October2021,
             _ => SpecificationVersion::June2018,

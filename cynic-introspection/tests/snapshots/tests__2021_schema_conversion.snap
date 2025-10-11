@@ -193,6 +193,7 @@ Schema {
                             name: "ID",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "landings",
@@ -202,6 +203,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "mission",
@@ -211,6 +213,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "original_launch",
@@ -220,6 +223,7 @@ Schema {
                             name: "Date",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "reuse_count",
@@ -229,6 +233,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "status",
@@ -238,6 +243,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "type",
@@ -247,6 +253,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                 ],
                 is_one_of: false,
@@ -384,6 +391,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "asds_landings",
@@ -393,6 +401,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "block",
@@ -402,6 +411,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "id",
@@ -411,6 +421,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "missions",
@@ -420,6 +431,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "original_launch",
@@ -429,6 +441,7 @@ Schema {
                             name: "Date",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "reuse_count",
@@ -438,6 +451,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "rtls_attempts",
@@ -447,6 +461,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "rtls_landings",
@@ -456,6 +471,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "status",
@@ -465,6 +481,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "water_landing",
@@ -474,6 +491,7 @@ Schema {
                             name: "Boolean",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                 ],
                 is_one_of: false,
@@ -1098,6 +1116,7 @@ Schema {
                             name: "Date",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "flight_number",
@@ -1107,6 +1126,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "id",
@@ -1116,6 +1136,7 @@ Schema {
                             name: "ID",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "start",
@@ -1125,6 +1146,7 @@ Schema {
                             name: "Date",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                 ],
                 is_one_of: false,
@@ -1665,6 +1687,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "block",
@@ -1674,6 +1697,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "cap_serial",
@@ -1683,6 +1707,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "capsule_reuse",
@@ -1692,6 +1717,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "core_flight",
@@ -1701,6 +1727,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "core_reuse",
@@ -1710,6 +1737,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "core_serial",
@@ -1719,6 +1747,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "customer",
@@ -1728,6 +1757,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "eccentricity",
@@ -1737,6 +1767,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "end",
@@ -1746,6 +1777,7 @@ Schema {
                             name: "Date",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "epoch",
@@ -1755,6 +1787,7 @@ Schema {
                             name: "Date",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "fairings_recovered",
@@ -1764,6 +1797,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "fairings_recovery_attempt",
@@ -1773,6 +1807,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "fairings_reuse",
@@ -1782,6 +1817,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "fairings_reused",
@@ -1791,6 +1827,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "fairings_ship",
@@ -1800,6 +1837,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "gridfins",
@@ -1809,6 +1847,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "id",
@@ -1818,6 +1857,7 @@ Schema {
                             name: "ID",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "inclination_deg",
@@ -1827,6 +1867,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "land_success",
@@ -1836,6 +1877,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "landing_intent",
@@ -1845,6 +1887,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "landing_type",
@@ -1854,6 +1897,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "landing_vehicle",
@@ -1863,6 +1907,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "launch_date_local",
@@ -1872,6 +1917,7 @@ Schema {
                             name: "Date",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "launch_date_utc",
@@ -1881,6 +1927,7 @@ Schema {
                             name: "Date",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "launch_success",
@@ -1890,6 +1937,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "launch_year",
@@ -1899,6 +1947,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "legs",
@@ -1908,6 +1957,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "lifespan_years",
@@ -1917,6 +1967,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "longitude",
@@ -1926,6 +1977,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "manufacturer",
@@ -1935,6 +1987,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "mean_motion",
@@ -1944,6 +1997,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "mission_id",
@@ -1953,6 +2007,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "mission_name",
@@ -1962,6 +2017,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "nationality",
@@ -1971,6 +2027,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "norad_id",
@@ -1980,6 +2037,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "orbit",
@@ -1989,6 +2047,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "payload_id",
@@ -1998,6 +2057,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "payload_type",
@@ -2007,6 +2067,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "periapsis_km",
@@ -2016,6 +2077,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "period_min",
@@ -2025,6 +2087,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "raan",
@@ -2034,6 +2097,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "reference_system",
@@ -2043,6 +2107,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "regime",
@@ -2052,6 +2117,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "reused",
@@ -2061,6 +2127,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "rocket_id",
@@ -2070,6 +2137,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "rocket_name",
@@ -2079,6 +2147,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "rocket_type",
@@ -2088,6 +2157,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "second_stage_block",
@@ -2097,6 +2167,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "semi_major_axis_km",
@@ -2106,6 +2177,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "ship",
@@ -2115,6 +2187,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "side_core1_reuse",
@@ -2124,6 +2197,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "side_core2_reuse",
@@ -2133,6 +2207,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "site_id",
@@ -2142,6 +2217,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "site_name_long",
@@ -2151,6 +2227,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "site_name",
@@ -2160,6 +2237,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "start",
@@ -2169,6 +2247,7 @@ Schema {
                             name: "Date",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "tbd",
@@ -2178,6 +2257,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "tentative_max_precision",
@@ -2187,6 +2267,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "tentative",
@@ -2196,6 +2277,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                 ],
                 is_one_of: false,
@@ -3029,6 +3111,7 @@ Schema {
                             name: "ID",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "manufacturer",
@@ -3038,6 +3121,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "name",
@@ -3047,6 +3131,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "payload_id",
@@ -3056,6 +3141,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                 ],
                 is_one_of: false,
@@ -3352,6 +3438,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "customer",
@@ -3361,6 +3448,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "eccentricity",
@@ -3370,6 +3458,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "epoch",
@@ -3379,6 +3468,7 @@ Schema {
                             name: "Date",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "inclination_deg",
@@ -3388,6 +3478,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "lifespan_years",
@@ -3397,6 +3488,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "longitude",
@@ -3406,6 +3498,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "manufacturer",
@@ -3415,6 +3508,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "mean_motion",
@@ -3424,6 +3518,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "nationality",
@@ -3433,6 +3528,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "norad_id",
@@ -3442,6 +3538,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "orbit",
@@ -3451,6 +3548,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "payload_id",
@@ -3460,6 +3558,7 @@ Schema {
                             name: "ID",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "payload_type",
@@ -3469,6 +3568,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "periapsis_km",
@@ -3478,6 +3578,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "period_min",
@@ -3487,6 +3588,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "raan",
@@ -3496,6 +3598,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "reference_system",
@@ -3505,6 +3608,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "regime",
@@ -3514,6 +3618,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "reused",
@@ -3523,6 +3628,7 @@ Schema {
                             name: "Boolean",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "semi_major_axis_km",
@@ -3532,6 +3638,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                 ],
                 is_one_of: false,
@@ -3554,6 +3661,7 @@ Schema {
                                     name: "ID",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -3574,6 +3682,7 @@ Schema {
                                     name: "CapsulesFind",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -3583,6 +3692,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -3592,6 +3702,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "order",
@@ -3601,6 +3712,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "sort",
@@ -3610,6 +3722,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -3630,6 +3743,7 @@ Schema {
                                     name: "CapsulesFind",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -3639,6 +3753,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -3648,6 +3763,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "order",
@@ -3657,6 +3773,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "sort",
@@ -3666,6 +3783,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -3686,6 +3804,7 @@ Schema {
                                     name: "CapsulesFind",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -3695,6 +3814,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -3704,6 +3824,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "order",
@@ -3713,6 +3834,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "sort",
@@ -3722,6 +3844,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -3752,6 +3875,7 @@ Schema {
                                     name: "ID",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -3772,6 +3896,7 @@ Schema {
                                     name: "CoresFind",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -3781,6 +3906,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -3790,6 +3916,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "order",
@@ -3799,6 +3926,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "sort",
@@ -3808,6 +3936,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -3828,6 +3957,7 @@ Schema {
                                     name: "CoresFind",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -3837,6 +3967,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -3846,6 +3977,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "order",
@@ -3855,6 +3987,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "sort",
@@ -3864,6 +3997,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -3884,6 +4018,7 @@ Schema {
                                     name: "CoresFind",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -3893,6 +4028,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -3902,6 +4038,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "order",
@@ -3911,6 +4048,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "sort",
@@ -3920,6 +4058,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -3940,6 +4079,7 @@ Schema {
                                     name: "ID",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -3960,6 +4100,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -3969,6 +4110,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -3989,6 +4131,7 @@ Schema {
                                     name: "HistoryFind",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -3998,6 +4141,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -4007,6 +4151,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "order",
@@ -4016,6 +4161,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "sort",
@@ -4025,6 +4171,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4045,6 +4192,7 @@ Schema {
                                     name: "HistoryFind",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -4054,6 +4202,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -4063,6 +4212,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "order",
@@ -4072,6 +4222,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "sort",
@@ -4081,6 +4232,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4101,6 +4253,7 @@ Schema {
                                     name: "ID",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4121,6 +4274,7 @@ Schema {
                                     name: "ID",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4141,6 +4295,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -4150,6 +4305,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4170,6 +4326,7 @@ Schema {
                                     name: "ID",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4190,6 +4347,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4210,6 +4368,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4230,6 +4389,7 @@ Schema {
                                     name: "LaunchFind",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -4239,6 +4399,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -4248,6 +4409,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "order",
@@ -4257,6 +4419,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "sort",
@@ -4266,6 +4429,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4286,6 +4450,7 @@ Schema {
                                     name: "LaunchFind",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -4295,6 +4460,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -4304,6 +4470,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "order",
@@ -4313,6 +4480,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "sort",
@@ -4322,6 +4490,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4342,6 +4511,7 @@ Schema {
                                     name: "LaunchFind",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -4351,6 +4521,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -4360,6 +4531,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "order",
@@ -4369,6 +4541,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "sort",
@@ -4378,6 +4551,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4398,6 +4572,7 @@ Schema {
                                     name: "LaunchFind",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -4407,6 +4582,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -4416,6 +4592,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "order",
@@ -4425,6 +4602,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "sort",
@@ -4434,6 +4612,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4454,6 +4633,7 @@ Schema {
                                     name: "ID",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4474,6 +4654,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -4483,6 +4664,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4503,6 +4685,7 @@ Schema {
                                     name: "ID",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4527,6 +4710,7 @@ Schema {
                                     name: "MissionsFind",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -4536,6 +4720,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -4545,6 +4730,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4569,6 +4755,7 @@ Schema {
                                     name: "MissionsFind",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -4578,6 +4765,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -4587,6 +4775,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4611,6 +4800,7 @@ Schema {
                                     name: "ID",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4631,6 +4821,7 @@ Schema {
                                     name: "PayloadsFind",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -4640,6 +4831,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -4649,6 +4841,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "order",
@@ -4658,6 +4851,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "sort",
@@ -4667,6 +4861,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4697,6 +4892,7 @@ Schema {
                                     name: "ID",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4717,6 +4913,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -4726,6 +4923,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4746,6 +4944,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -4755,6 +4954,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4775,6 +4975,7 @@ Schema {
                                     name: "ID",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4795,6 +4996,7 @@ Schema {
                                     name: "ShipsFind",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -4804,6 +5006,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -4813,6 +5016,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "order",
@@ -4822,6 +5026,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "sort",
@@ -4831,6 +5036,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4851,6 +5057,7 @@ Schema {
                                     name: "ShipsFind",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -4860,6 +5067,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -4869,6 +5077,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "order",
@@ -4878,6 +5087,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "sort",
@@ -4887,6 +5097,7 @@ Schema {
                                     name: "String",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4911,6 +5122,7 @@ Schema {
                                     name: "users_select_column",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -4922,6 +5134,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -4933,6 +5146,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "order_by",
@@ -4944,6 +5158,7 @@ Schema {
                                     name: "users_order_by",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "where",
@@ -4955,6 +5170,7 @@ Schema {
                                     name: "users_bool_exp",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -4979,6 +5195,7 @@ Schema {
                                     name: "users_select_column",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -4990,6 +5207,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -5001,6 +5219,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "order_by",
@@ -5012,6 +5231,7 @@ Schema {
                                     name: "users_order_by",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "where",
@@ -5023,6 +5243,7 @@ Schema {
                                     name: "users_bool_exp",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -5045,6 +5266,7 @@ Schema {
                                     name: "uuid",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -6266,6 +6488,7 @@ Schema {
                             name: "ID",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "name",
@@ -6275,6 +6498,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "model",
@@ -6284,6 +6508,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "type",
@@ -6293,6 +6518,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "role",
@@ -6302,6 +6528,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "active",
@@ -6311,6 +6538,7 @@ Schema {
                             name: "Boolean",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "imo",
@@ -6320,6 +6548,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "mmsi",
@@ -6329,6 +6558,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "abs",
@@ -6338,6 +6568,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "class",
@@ -6347,6 +6578,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "weight_lbs",
@@ -6356,6 +6588,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "weight_kg",
@@ -6365,6 +6598,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "year_built",
@@ -6374,6 +6608,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "home_port",
@@ -6383,6 +6618,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "status",
@@ -6392,6 +6628,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "speed_kn",
@@ -6401,6 +6638,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "course_deg",
@@ -6410,6 +6648,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "latitude",
@@ -6419,6 +6658,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "longitude",
@@ -6428,6 +6668,7 @@ Schema {
                             name: "Float",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "successful_landings",
@@ -6437,6 +6678,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "attempted_landings",
@@ -6446,6 +6688,7 @@ Schema {
                             name: "Int",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "mission",
@@ -6455,6 +6698,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                 ],
                 is_one_of: false,
@@ -6513,6 +6757,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_gt",
@@ -6522,6 +6767,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_gte",
@@ -6531,6 +6777,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_ilike",
@@ -6540,6 +6787,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_in",
@@ -6549,6 +6797,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_is_null",
@@ -6558,6 +6807,7 @@ Schema {
                             name: "Boolean",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_like",
@@ -6567,6 +6817,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_lt",
@@ -6576,6 +6827,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_lte",
@@ -6585,6 +6837,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_neq",
@@ -6594,6 +6847,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_nilike",
@@ -6603,6 +6857,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_nin",
@@ -6612,6 +6867,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_nlike",
@@ -6621,6 +6877,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_nsimilar",
@@ -6630,6 +6887,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_similar",
@@ -6639,6 +6897,7 @@ Schema {
                             name: "String",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                 ],
                 is_one_of: false,
@@ -6665,6 +6924,7 @@ Schema {
                                     name: "users_select_column",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -6676,6 +6936,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -6687,6 +6948,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "order_by",
@@ -6698,6 +6960,7 @@ Schema {
                                     name: "users_order_by",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "where",
@@ -6709,6 +6972,7 @@ Schema {
                                     name: "users_bool_exp",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -6733,6 +6997,7 @@ Schema {
                                     name: "users_select_column",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "limit",
@@ -6744,6 +7009,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "offset",
@@ -6755,6 +7021,7 @@ Schema {
                                     name: "Int",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "order_by",
@@ -6766,6 +7033,7 @@ Schema {
                                     name: "users_order_by",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "where",
@@ -6777,6 +7045,7 @@ Schema {
                                     name: "users_bool_exp",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -6799,6 +7068,7 @@ Schema {
                                     name: "uuid",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -7358,6 +7628,7 @@ Schema {
                                 default_value: Some(
                                     "false",
                                 ),
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -7400,6 +7671,7 @@ Schema {
                                 default_value: Some(
                                     "false",
                                 ),
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -7592,6 +7864,7 @@ Schema {
                             name: "timestamptz",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_gt",
@@ -7601,6 +7874,7 @@ Schema {
                             name: "timestamptz",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_gte",
@@ -7610,6 +7884,7 @@ Schema {
                             name: "timestamptz",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_in",
@@ -7619,6 +7894,7 @@ Schema {
                             name: "timestamptz",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_is_null",
@@ -7628,6 +7904,7 @@ Schema {
                             name: "Boolean",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_lt",
@@ -7637,6 +7914,7 @@ Schema {
                             name: "timestamptz",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_lte",
@@ -7646,6 +7924,7 @@ Schema {
                             name: "timestamptz",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_neq",
@@ -7655,6 +7934,7 @@ Schema {
                             name: "timestamptz",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_nin",
@@ -7664,6 +7944,7 @@ Schema {
                             name: "timestamptz",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                 ],
                 is_one_of: false,
@@ -7780,6 +8061,7 @@ Schema {
                                     name: "users_select_column",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                             InputValue {
                                 name: "distinct",
@@ -7789,6 +8071,7 @@ Schema {
                                     name: "Boolean",
                                 },
                                 default_value: None,
+                                deprecated: No,
                             },
                         ],
                         ty: FieldType {
@@ -7836,6 +8119,7 @@ Schema {
                             name: "users_bool_exp",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_not",
@@ -7845,6 +8129,7 @@ Schema {
                             name: "users_bool_exp",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_or",
@@ -7854,6 +8139,7 @@ Schema {
                             name: "users_bool_exp",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "id",
@@ -7863,6 +8149,7 @@ Schema {
                             name: "uuid_comparison_exp",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "name",
@@ -7872,6 +8159,7 @@ Schema {
                             name: "String_comparison_exp",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "rocket",
@@ -7881,6 +8169,7 @@ Schema {
                             name: "String_comparison_exp",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "timestamp",
@@ -7890,6 +8179,7 @@ Schema {
                             name: "timestamptz_comparison_exp",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "twitter",
@@ -7899,6 +8189,7 @@ Schema {
                             name: "String_comparison_exp",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                 ],
                 is_one_of: false,
@@ -8021,6 +8312,7 @@ Schema {
                             name: "order_by",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "name",
@@ -8030,6 +8322,7 @@ Schema {
                             name: "order_by",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "rocket",
@@ -8039,6 +8332,7 @@ Schema {
                             name: "order_by",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "timestamp",
@@ -8048,6 +8342,7 @@ Schema {
                             name: "order_by",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "twitter",
@@ -8057,6 +8352,7 @@ Schema {
                             name: "order_by",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                 ],
                 is_one_of: false,
@@ -8124,6 +8420,7 @@ Schema {
                             name: "uuid",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_gt",
@@ -8133,6 +8430,7 @@ Schema {
                             name: "uuid",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_gte",
@@ -8142,6 +8440,7 @@ Schema {
                             name: "uuid",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_in",
@@ -8151,6 +8450,7 @@ Schema {
                             name: "uuid",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_is_null",
@@ -8160,6 +8460,7 @@ Schema {
                             name: "Boolean",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_lt",
@@ -8169,6 +8470,7 @@ Schema {
                             name: "uuid",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_lte",
@@ -8178,6 +8480,7 @@ Schema {
                             name: "uuid",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_neq",
@@ -8187,6 +8490,7 @@ Schema {
                             name: "uuid",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                     InputValue {
                         name: "_nin",
@@ -8196,6 +8500,7 @@ Schema {
                             name: "uuid",
                         },
                         default_value: None,
+                        deprecated: No,
                     },
                 ],
                 is_one_of: false,
@@ -8219,6 +8524,7 @@ Schema {
                         name: "Boolean",
                     },
                     default_value: None,
+                    deprecated: No,
                 },
             ],
             is_repeatable: false,
@@ -8244,6 +8550,7 @@ Schema {
                         name: "Boolean",
                     },
                     default_value: None,
+                    deprecated: No,
                 },
             ],
             is_repeatable: false,

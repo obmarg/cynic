@@ -304,6 +304,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "landings",
@@ -316,6 +318,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "mission",
@@ -328,6 +332,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "original_launch",
@@ -340,6 +346,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "reuse_count",
@@ -352,6 +360,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "status",
@@ -364,6 +374,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "type",
@@ -376,6 +388,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                             ],
                         ),
@@ -584,6 +598,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "asds_landings",
@@ -596,6 +612,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "block",
@@ -608,6 +626,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "id",
@@ -620,6 +640,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "missions",
@@ -632,6 +654,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "original_launch",
@@ -644,6 +668,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "reuse_count",
@@ -656,6 +682,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "rtls_attempts",
@@ -668,6 +696,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "rtls_landings",
@@ -680,6 +710,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "status",
@@ -692,6 +724,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "water_landing",
@@ -704,6 +738,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                             ],
                         ),
@@ -1665,6 +1701,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "flight_number",
@@ -1677,6 +1715,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "id",
@@ -1689,6 +1729,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "start",
@@ -1701,6 +1743,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                             ],
                         ),
@@ -2506,6 +2550,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "block",
@@ -2518,6 +2564,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "cap_serial",
@@ -2530,6 +2578,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "capsule_reuse",
@@ -2542,6 +2592,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "core_flight",
@@ -2554,6 +2606,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "core_reuse",
@@ -2566,6 +2620,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "core_serial",
@@ -2578,6 +2634,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "customer",
@@ -2590,6 +2648,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "eccentricity",
@@ -2602,6 +2662,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "end",
@@ -2614,6 +2676,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "epoch",
@@ -2626,6 +2690,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "fairings_recovered",
@@ -2638,6 +2704,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "fairings_recovery_attempt",
@@ -2650,6 +2718,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "fairings_reuse",
@@ -2662,6 +2732,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "fairings_reused",
@@ -2674,6 +2746,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "fairings_ship",
@@ -2686,6 +2760,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "gridfins",
@@ -2698,6 +2774,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "id",
@@ -2710,6 +2788,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "inclination_deg",
@@ -2722,6 +2802,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "land_success",
@@ -2734,6 +2816,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "landing_intent",
@@ -2746,6 +2830,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "landing_type",
@@ -2758,6 +2844,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "landing_vehicle",
@@ -2770,6 +2858,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "launch_date_local",
@@ -2782,6 +2872,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "launch_date_utc",
@@ -2794,6 +2886,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "launch_success",
@@ -2806,6 +2900,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "launch_year",
@@ -2818,6 +2914,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "legs",
@@ -2830,6 +2928,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "lifespan_years",
@@ -2842,6 +2942,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "longitude",
@@ -2854,6 +2956,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "manufacturer",
@@ -2866,6 +2970,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "mean_motion",
@@ -2878,6 +2984,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "mission_id",
@@ -2890,6 +2998,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "mission_name",
@@ -2902,6 +3012,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "nationality",
@@ -2914,6 +3026,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "norad_id",
@@ -2926,6 +3040,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "orbit",
@@ -2938,6 +3054,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "payload_id",
@@ -2950,6 +3068,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "payload_type",
@@ -2962,6 +3082,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "periapsis_km",
@@ -2974,6 +3096,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "period_min",
@@ -2986,6 +3110,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "raan",
@@ -2998,6 +3124,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "reference_system",
@@ -3010,6 +3138,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "regime",
@@ -3022,6 +3152,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "reused",
@@ -3034,6 +3166,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "rocket_id",
@@ -3046,6 +3180,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "rocket_name",
@@ -3058,6 +3194,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "rocket_type",
@@ -3070,6 +3208,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "second_stage_block",
@@ -3082,6 +3222,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "semi_major_axis_km",
@@ -3094,6 +3236,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "ship",
@@ -3106,6 +3250,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "side_core1_reuse",
@@ -3118,6 +3264,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "side_core2_reuse",
@@ -3130,6 +3278,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "site_id",
@@ -3142,6 +3292,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "site_name_long",
@@ -3154,6 +3306,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "site_name",
@@ -3166,6 +3320,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "start",
@@ -3178,6 +3334,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "tbd",
@@ -3190,6 +3348,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "tentative_max_precision",
@@ -3202,6 +3362,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "tentative",
@@ -3214,6 +3376,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                             ],
                         ),
@@ -4528,6 +4692,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "manufacturer",
@@ -4540,6 +4706,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "name",
@@ -4552,6 +4720,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "payload_id",
@@ -4564,6 +4734,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                             ],
                         ),
@@ -5007,6 +5179,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "customer",
@@ -5019,6 +5193,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "eccentricity",
@@ -5031,6 +5207,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "epoch",
@@ -5043,6 +5221,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "inclination_deg",
@@ -5055,6 +5235,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "lifespan_years",
@@ -5067,6 +5249,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "longitude",
@@ -5079,6 +5263,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "manufacturer",
@@ -5091,6 +5277,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "mean_motion",
@@ -5103,6 +5291,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "nationality",
@@ -5115,6 +5305,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "norad_id",
@@ -5127,6 +5319,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "orbit",
@@ -5139,6 +5333,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "payload_id",
@@ -5151,6 +5347,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "payload_type",
@@ -5163,6 +5361,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "periapsis_km",
@@ -5175,6 +5375,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "period_min",
@@ -5187,6 +5389,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "raan",
@@ -5199,6 +5403,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "reference_system",
@@ -5211,6 +5417,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "regime",
@@ -5223,6 +5431,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "reused",
@@ -5235,6 +5445,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "semi_major_axis_km",
@@ -5247,6 +5459,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                             ],
                         ),
@@ -5285,6 +5499,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -5312,6 +5528,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -5324,6 +5542,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -5336,6 +5556,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "order",
@@ -5348,6 +5570,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "sort",
@@ -5360,6 +5584,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -5393,6 +5619,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -5405,6 +5633,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -5417,6 +5647,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "order",
@@ -5429,6 +5661,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "sort",
@@ -5441,6 +5675,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -5474,6 +5710,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -5486,6 +5724,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -5498,6 +5738,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "order",
@@ -5510,6 +5752,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "sort",
@@ -5522,6 +5766,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -5575,6 +5821,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -5602,6 +5850,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -5614,6 +5864,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -5626,6 +5878,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "order",
@@ -5638,6 +5892,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "sort",
@@ -5650,6 +5906,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -5683,6 +5941,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -5695,6 +5955,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -5707,6 +5969,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "order",
@@ -5719,6 +5983,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "sort",
@@ -5731,6 +5997,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -5764,6 +6032,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -5776,6 +6046,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -5788,6 +6060,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "order",
@@ -5800,6 +6074,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "sort",
@@ -5812,6 +6088,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -5851,6 +6129,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -5878,6 +6158,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -5890,6 +6172,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -5923,6 +6207,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -5935,6 +6221,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -5947,6 +6235,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "order",
@@ -5959,6 +6249,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "sort",
@@ -5971,6 +6263,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6004,6 +6298,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -6016,6 +6312,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -6028,6 +6326,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "order",
@@ -6040,6 +6340,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "sort",
@@ -6052,6 +6354,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6085,6 +6389,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6118,6 +6424,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6145,6 +6453,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -6157,6 +6467,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6196,6 +6508,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6223,6 +6537,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6250,6 +6566,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6277,6 +6595,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -6289,6 +6609,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -6301,6 +6623,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "order",
@@ -6313,6 +6637,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "sort",
@@ -6325,6 +6651,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6358,6 +6686,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -6370,6 +6700,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -6382,6 +6714,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "order",
@@ -6394,6 +6728,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "sort",
@@ -6406,6 +6742,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6439,6 +6777,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -6451,6 +6791,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -6463,6 +6805,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "order",
@@ -6475,6 +6819,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "sort",
@@ -6487,6 +6833,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6514,6 +6862,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -6526,6 +6876,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -6538,6 +6890,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "order",
@@ -6550,6 +6904,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "sort",
@@ -6562,6 +6918,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6601,6 +6959,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6628,6 +6988,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -6640,6 +7002,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6679,6 +7043,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6708,6 +7074,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -6720,6 +7088,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -6732,6 +7102,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6767,6 +7139,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -6779,6 +7153,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -6791,6 +7167,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6826,6 +7204,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6853,6 +7233,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -6865,6 +7247,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -6877,6 +7261,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "order",
@@ -6889,6 +7275,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "sort",
@@ -6901,6 +7289,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6954,6 +7344,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6981,6 +7373,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -6993,6 +7387,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -7026,6 +7422,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -7038,6 +7436,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -7071,6 +7471,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -7098,6 +7500,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -7110,6 +7514,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -7122,6 +7528,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "order",
@@ -7134,6 +7542,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "sort",
@@ -7146,6 +7556,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -7179,6 +7591,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -7191,6 +7605,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -7203,6 +7619,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "order",
@@ -7215,6 +7633,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "sort",
@@ -7227,6 +7647,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -7270,6 +7692,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -7284,6 +7708,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -7298,6 +7724,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "order_by",
@@ -7324,6 +7752,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "where",
@@ -7338,6 +7768,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -7399,6 +7831,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -7413,6 +7847,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -7427,6 +7863,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "order_by",
@@ -7453,6 +7891,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "where",
@@ -7467,6 +7907,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -7508,6 +7950,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -9345,6 +9789,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "name",
@@ -9357,6 +9803,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "model",
@@ -9369,6 +9817,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "type",
@@ -9381,6 +9831,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "role",
@@ -9393,6 +9845,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "active",
@@ -9405,6 +9859,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "imo",
@@ -9417,6 +9873,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "mmsi",
@@ -9429,6 +9887,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "abs",
@@ -9441,6 +9901,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "class",
@@ -9453,6 +9915,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "weight_lbs",
@@ -9465,6 +9929,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "weight_kg",
@@ -9477,6 +9943,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "year_built",
@@ -9489,6 +9957,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "home_port",
@@ -9501,6 +9971,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "status",
@@ -9513,6 +9985,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "speed_kn",
@@ -9525,6 +9999,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "course_deg",
@@ -9537,6 +10013,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "latitude",
@@ -9549,6 +10027,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "longitude",
@@ -9561,6 +10041,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "successful_landings",
@@ -9573,6 +10055,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "attempted_landings",
@@ -9585,6 +10069,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "mission",
@@ -9597,6 +10083,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                             ],
                         ),
@@ -9697,6 +10185,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_gt",
@@ -9709,6 +10199,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_gte",
@@ -9721,6 +10213,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_ilike",
@@ -9733,6 +10227,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_in",
@@ -9757,6 +10253,8 @@ Some(
                                         ),
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_is_null",
@@ -9769,6 +10267,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_like",
@@ -9781,6 +10281,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_lt",
@@ -9793,6 +10295,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_lte",
@@ -9805,6 +10309,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_neq",
@@ -9817,6 +10323,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_nilike",
@@ -9829,6 +10337,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_nin",
@@ -9853,6 +10363,8 @@ Some(
                                         ),
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_nlike",
@@ -9865,6 +10377,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_nsimilar",
@@ -9877,6 +10391,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_similar",
@@ -9889,6 +10405,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                             ],
                         ),
@@ -9937,6 +10455,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -9951,6 +10471,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -9965,6 +10487,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "order_by",
@@ -9991,6 +10515,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "where",
@@ -10005,6 +10531,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -10066,6 +10594,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "limit",
@@ -10080,6 +10610,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "offset",
@@ -10094,6 +10626,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "order_by",
@@ -10120,6 +10654,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "where",
@@ -10134,6 +10670,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -10175,6 +10713,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -11131,6 +11671,8 @@ Some(
                                             default_value: Some(
                                                 "false",
                                             ),
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -11230,6 +11772,8 @@ Some(
                                             default_value: Some(
                                                 "false",
                                             ),
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -11519,6 +12063,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_gt",
@@ -11531,6 +12077,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_gte",
@@ -11543,6 +12091,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_in",
@@ -11567,6 +12117,8 @@ Some(
                                         ),
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_is_null",
@@ -11579,6 +12131,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_lt",
@@ -11591,6 +12145,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_lte",
@@ -11603,6 +12159,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_neq",
@@ -11615,6 +12173,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_nin",
@@ -11639,6 +12199,8 @@ Some(
                                         ),
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                             ],
                         ),
@@ -11855,6 +12417,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "distinct",
@@ -11867,6 +12431,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -11946,6 +12512,8 @@ Some(
                                         ),
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_not",
@@ -11958,6 +12526,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_or",
@@ -11976,6 +12546,8 @@ Some(
                                         ),
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "id",
@@ -11988,6 +12560,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "name",
@@ -12000,6 +12574,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "rocket",
@@ -12012,6 +12588,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "timestamp",
@@ -12024,6 +12602,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "twitter",
@@ -12036,6 +12616,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                             ],
                         ),
@@ -12221,6 +12803,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "name",
@@ -12233,6 +12817,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "rocket",
@@ -12245,6 +12831,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "timestamp",
@@ -12257,6 +12845,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "twitter",
@@ -12269,6 +12859,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                             ],
                         ),
@@ -12369,6 +12961,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_gt",
@@ -12381,6 +12975,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_gte",
@@ -12393,6 +12989,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_in",
@@ -12417,6 +13015,8 @@ Some(
                                         ),
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_is_null",
@@ -12429,6 +13029,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_lt",
@@ -12441,6 +13043,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_lte",
@@ -12453,6 +13057,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_neq",
@@ -12465,6 +13071,8 @@ Some(
                                         of_type: None,
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                                 InputValue {
                                     name: "_nin",
@@ -12489,6 +13097,8 @@ Some(
                                         ),
                                     },
                                     default_value: None,
+                                    is_deprecated: false,
+                                    deprecation_reason: None,
                                 },
                             ],
                         ),
@@ -12525,6 +13135,8 @@ Some(
                                     ),
                                 },
                                 default_value: None,
+                                is_deprecated: false,
+                                deprecation_reason: None,
                             },
                         ],
                         locations: [
@@ -12559,6 +13171,8 @@ Some(
                                     ),
                                 },
                                 default_value: None,
+                                is_deprecated: false,
+                                deprecation_reason: None,
                             },
                         ],
                         locations: [

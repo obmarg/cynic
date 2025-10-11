@@ -12,6 +12,9 @@
             "name": "description"
           },
           {
+            "name": "specifiedByURL"
+          },
+          {
             "name": "fields"
           },
           {
@@ -28,6 +31,9 @@
           },
           {
             "name": "ofType"
+          },
+          {
+            "name": "isOneOf"
           }
         ]
       },
@@ -44,6 +50,12 @@
           },
           {
             "name": "defaultValue"
+          },
+          {
+            "name": "isDeprecated"
+          },
+          {
+            "name": "deprecationReason"
           }
         ]
       }

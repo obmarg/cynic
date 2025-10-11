@@ -115,3 +115,12 @@ fn test_deserializing_disabled_introspection() {
         Err(SchemaError::IntrospectionQueryFailed)
     );
 }
+
+#[test]
+fn test_2025_introspection_query() {
+    insta::assert_snapshot!(build_2025_query().query);
+}
+
+fn build_2025_query() -> cynic::Operation<IntrospectionQuery, ()> {
+    IntrospectionQuery::with_capabilities(SpecificationVersion::September2025.capabilities())
+}
