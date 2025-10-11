@@ -33,6 +33,22 @@
             "name": "ofType"
           }
         ]
+      },
+      "input_value_type": {
+        "fields": [
+          {
+            "name": "name"
+          },
+          {
+            "name": "description"
+          },
+          {
+            "name": "type"
+          },
+          {
+            "name": "defaultValue"
+          }
+        ]
       }
     }
   }

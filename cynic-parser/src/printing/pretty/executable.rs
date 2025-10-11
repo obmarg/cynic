@@ -365,12 +365,6 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Description<'a>> {
     }
 }
 
-fn comma_or_nil<'a>(allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>> {
-    allocator
-        .nil()
-        .flat_alt(allocator.text(",").append(allocator.space()))
-}
-
 fn comma_or_newline<'a>(allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>> {
     allocator
         .line()

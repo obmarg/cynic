@@ -158,6 +158,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -170,6 +172,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -182,6 +186,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -194,6 +200,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -221,6 +229,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -233,6 +243,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -245,6 +257,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -257,6 +271,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -284,6 +300,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -296,6 +314,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -308,6 +328,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -320,6 +342,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -347,6 +371,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -359,6 +385,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -371,6 +399,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -383,6 +413,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -410,6 +442,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -422,6 +456,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -434,6 +470,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -446,6 +484,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -2047,6 +2087,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -2059,6 +2101,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -2071,6 +2115,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -2083,6 +2129,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -2126,6 +2174,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -2138,6 +2188,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -2150,6 +2202,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -2162,6 +2216,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -2189,6 +2245,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -2201,6 +2259,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -2213,6 +2273,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -2225,6 +2287,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -2975,6 +3039,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -2987,6 +3053,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -2999,6 +3067,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -3011,6 +3081,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -3038,6 +3110,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -3050,6 +3124,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -3062,6 +3138,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -3074,6 +3152,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -3666,6 +3746,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -3678,6 +3760,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -3690,6 +3774,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -3702,6 +3788,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -3729,6 +3817,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "filmID",
@@ -3741,6 +3831,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -3768,6 +3860,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -3780,6 +3874,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -3792,6 +3888,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -3804,6 +3902,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -3831,6 +3931,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "personID",
@@ -3843,6 +3945,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -3870,6 +3974,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -3882,6 +3988,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -3894,6 +4002,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -3906,6 +4016,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -3933,6 +4045,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "planetID",
@@ -3945,6 +4059,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -3972,6 +4088,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -3984,6 +4102,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -3996,6 +4116,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -4008,6 +4130,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -4035,6 +4159,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "speciesID",
@@ -4047,6 +4173,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -4074,6 +4202,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -4086,6 +4216,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -4098,6 +4230,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -4110,6 +4244,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -4137,6 +4273,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "starshipID",
@@ -4149,6 +4287,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -4176,6 +4316,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -4188,6 +4330,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -4200,6 +4344,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -4212,6 +4358,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -4239,6 +4387,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "vehicleID",
@@ -4251,6 +4401,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -4288,6 +4440,8 @@ Some(
                                                 ),
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -4514,6 +4668,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -4526,6 +4682,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -4538,6 +4696,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -4550,6 +4710,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -4577,6 +4739,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -4589,6 +4753,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -4601,6 +4767,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -4613,6 +4781,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -5421,6 +5591,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -5433,6 +5605,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -5445,6 +5619,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -5457,6 +5633,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -5484,6 +5662,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -5496,6 +5676,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -5508,6 +5690,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -5520,6 +5704,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6312,6 +6498,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -6324,6 +6512,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -6336,6 +6526,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -6348,6 +6540,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -6375,6 +6569,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "first",
@@ -6387,6 +6583,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "before",
@@ -6399,6 +6597,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                         InputValue {
                                             name: "last",
@@ -6411,6 +6611,8 @@ Some(
                                                 of_type: None,
                                             },
                                             default_value: None,
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -7833,6 +8035,8 @@ Some(
                                             default_value: Some(
                                                 "false",
                                             ),
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -7932,6 +8136,8 @@ Some(
                                             default_value: Some(
                                                 "false",
                                             ),
+                                            is_deprecated: false,
+                                            deprecation_reason: None,
                                         },
                                     ],
                                     ty: FieldType {
@@ -8145,6 +8351,8 @@ Some(
                                     ),
                                 },
                                 default_value: None,
+                                is_deprecated: false,
+                                deprecation_reason: None,
                             },
                         ],
                         locations: [
@@ -8179,6 +8387,8 @@ Some(
                                     ),
                                 },
                                 default_value: None,
+                                is_deprecated: false,
+                                deprecation_reason: None,
                             },
                         ],
                         locations: [

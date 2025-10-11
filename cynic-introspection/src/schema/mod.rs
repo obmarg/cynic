@@ -233,6 +233,8 @@ pub struct InputValue {
     pub ty: FieldType,
     /// An optional default value for this field, represented as a GraphQL literal
     pub default_value: Option<String>,
+    /// Whether this input value is deprecated and should no longer be used.
+    pub deprecated: Deprecated,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -507,6 +509,7 @@ impl TryFrom<crate::query::InputValue> for InputValue {
             description: value.description,
             ty: value.ty.try_into()?,
             default_value: value.default_value,
+            deprecated: Deprecated::new(value.is_deprecated, value.deprecation_reason),
         })
     }
 }
