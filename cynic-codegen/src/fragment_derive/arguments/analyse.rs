@@ -3,6 +3,8 @@ use std::{
     rc::Rc,
 };
 
+use syn::LitStr;
+
 use crate::schema::{Schema, Unvalidated};
 
 use {proc_macro2::Span, syn::Lit};
@@ -40,6 +42,7 @@ pub struct Object<'a> {
 pub struct Field<'a> {
     pub schema_field: InputValue<'a>,
     pub value: ArgumentValue<'a>,
+    pub requires_feature: Option<LitStr>,
 }
 
 #[derive(Debug, PartialEq)]
@@ -166,10 +169,12 @@ fn analyse_fields<'a>(
             .find(|a| a.name == arg.argument_name)
             .unwrap();
 
+        let requires_feature = arg.requires_feature.clone();
         match analyse_argument(analysis, arg, schema_field, schema) {
             Ok(value) => fields.push(Field {
                 schema_field: schema_field.clone(),
                 value,
+                requires_feature,
             }),
             Err(e) => errors.push(e),
         }

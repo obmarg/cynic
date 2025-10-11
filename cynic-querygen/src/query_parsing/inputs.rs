@@ -126,7 +126,7 @@ fn lifetimed_objects<'a>(document: &NormalisedDocument<'a, 'a>) -> HashSet<&'a s
                     for field in &object.fields {
                         if !visited.contains(&field.value_type.inner_name()) {
                             stack.push(field.value_type.clone());
-                            visited.insert(field.value_type.inner_name().into());
+                            visited.insert(field.value_type.inner_name());
                             continue 'outer;
                         }
                     }

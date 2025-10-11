@@ -48,7 +48,7 @@ impl<'a> Directive<'a> {
     }
 }
 
-impl<'a> InputObjectDefinition<'a> {
+impl InputObjectDefinition<'_> {
     pub fn is_one_of(&self) -> bool {
         self.directives()
             .any(|directive| directive.name() == "oneOf")
