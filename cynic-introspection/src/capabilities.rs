@@ -4,6 +4,7 @@ use crate::SpecificationVersion;
 #[derive(Debug, Default, PartialEq, Eq)]
 pub struct CapabilitySet {
     pub(super) specification_version: SpecificationVersion,
+    pub(super) supports_oneof: bool,
 }
 
 impl CapabilitySet {
@@ -18,6 +19,7 @@ impl SpecificationVersion {
     pub fn capabilities(self) -> CapabilitySet {
         CapabilitySet {
             specification_version: self,
+            supports_oneof: matches!(self, SpecificationVersion::September2025),
         }
     }
 }

@@ -12,7 +12,11 @@ impl IntrospectionQuery {
             SpecificationVersion::September2025 => {
                 builder.enable_feature("2021");
                 builder.enable_feature("2025");
+                builder.enable_feature("oneOf");
             }
+        }
+        if capabilities.supports_oneof {
+            builder.enable_feature("oneOf");
         }
         builder.build().expect("to succeed")
     }
