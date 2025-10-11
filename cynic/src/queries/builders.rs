@@ -246,6 +246,14 @@ impl<Field, FieldSchemaType, VariablesFields>
     {
         SelectionBuilder::private_new(&mut self.field.children, self.context.descend())
     }
+
+    /// Checks if a feature has been enabled for this operation.
+    ///
+    /// QueryFragment implementations can use this to avoid sending parts of
+    /// queries to servers that aren't going to understand them.
+    pub fn is_feature_enabled(&self, feature: &str) -> bool {
+        self.context.features_enabled.contains(feature)
+    }
 }
 
 /// Builds an inline fragment in a selection

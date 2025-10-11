@@ -1,6 +1,7 @@
 use quote::{ToTokens, TokenStreamExt, format_ident, quote};
+use syn::Path;
 
-use crate::idents::to_pascal_case;
+use crate::{fragment_derive::arguments::analyse::Field, idents::to_pascal_case};
 
 use super::analyse::{AnalysedFieldArguments, ArgumentValue, VariantDetails};
 
@@ -32,29 +33,49 @@ impl ToTokens for Output<'_> {
                 schema_module,
             });
 
-        let arg_markers = self
-            .analysed
-            .arguments
-            .iter()
-            .map(|arg| arg.schema_field.marker_ident().to_rust_ident());
-
-        let arg_values = self
-            .analysed
-            .arguments
-            .iter()
-            .map(|arg| ArgumentValueTokens {
-                value: &arg.value,
-                schema_module,
-            });
+        let arguments = self.analysed.arguments.iter().map(|arg| ArgOutput {
+            arg,
+            schema_module,
+            argument_module,
+        });
 
         tokens.append_all(quote! {
             {
                 #(#variant_structs)*
-                #(
-                    field_builder.argument::<#argument_module::#arg_markers>()
-                    #arg_values;
-                )*
+                #(#arguments)*
             }
+        })
+    }
+}
+
+struct ArgOutput<'a> {
+    arg: &'a Field<'a>,
+    schema_module: &'a Path,
+    argument_module: &'a Path,
+}
+
+impl ToTokens for ArgOutput<'_> {
+    fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
+        let marker = self.arg.schema_field.marker_ident().to_rust_ident();
+        let value = ArgumentValueTokens {
+            value: &self.arg.value,
+            schema_module: self.schema_module,
+        };
+        let argument_module = &self.argument_module;
+        let argument_tokens = quote! {
+            field_builder.argument::<#argument_module::#marker>()
+            #value;
+        };
+
+        tokens.append_all(match &self.arg.requires_feature {
+            Some(feature) => {
+                quote! {
+                    if field_builder.is_feature_enabled(#feature) {
+                        #argument_tokens
+                    }
+                }
+            }
+            None => argument_tokens,
         })
     }
 }

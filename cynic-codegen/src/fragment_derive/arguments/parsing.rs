@@ -1,6 +1,6 @@
 use proc_macro2::Span;
 use syn::{
-    Ident, Result, Token,
+    Attribute, Ident, LitStr, Result, Token,
     ext::IdentExt,
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
@@ -44,6 +44,7 @@ impl CynicArguments {
 pub struct FieldArgument {
     pub argument_name: Ident,
     pub value: FieldArgumentValue,
+    pub requires_feature: Option<syn::LitStr>,
 }
 
 #[derive(Debug, Clone)]
@@ -54,6 +55,15 @@ pub enum FieldArgumentValue {
 
 impl Parse for FieldArgument {
     fn parse(input: ParseStream<'_>) -> Result<Self> {
+        let requires_feature = {
+            let lookahead = input.lookahead1();
+            if lookahead.peek(Token![#]) {
+                Some(input.parse::<FeatureAttribute>()?.0)
+            } else {
+                None
+            }
+        };
+
         let argument_name = input.call(Ident::parse_any)?;
         let lookahead = input.lookahead1();
         let value;
@@ -68,6 +78,7 @@ impl Parse for FieldArgument {
         }
 
         Ok(FieldArgument {
+            requires_feature,
             argument_name,
             value,
         })
@@ -145,9 +156,62 @@ impl Parse for ArgumentLiteral {
     }
 }
 
+pub struct FeatureAttribute(LitStr);
+
+impl Parse for FeatureAttribute {
+    fn parse(input: ParseStream<'_>) -> Result<Self> {
+        use syn::{Expr, ExprLit, Lit};
+
+        let mut attrs = input.call(Attribute::parse_outer)?;
+        if attrs.is_empty() {
+            return Err(syn::Error::new(
+                Span::call_site(),
+                "arguments must have one attribute",
+            ));
+        }
+        if attrs.len() > 1 {
+            return Err(syn::Error::new_spanned(
+                &attrs[2],
+                "arguments may only have one attribute",
+            ));
+        }
+
+        let attr = attrs.pop().unwrap();
+        match attr.meta {
+            syn::Meta::NameValue(meta) if is_feature_flag(&meta) => {
+                let Expr::Lit(ExprLit {
+                    lit: Lit::Str(literal),
+                    ..
+                }) = meta.value
+                else {
+                    panic!("bug: we already checked this was a feature flag");
+                };
+                Ok(Self(literal))
+            }
+            _ => Err(syn::Error::new_spanned(
+                attr,
+                "argument attributes must have the form `feature = \"xyz\"`",
+            )),
+        }
+    }
+}
+
+fn is_feature_flag(meta: &syn::MetaNameValue) -> bool {
+    use syn::{Expr, ExprLit, Lit};
+    meta.path.is_ident("feature")
+        && matches!(
+            meta.value,
+            Expr::Lit(ExprLit {
+                lit: Lit::Str(_),
+                ..
+            })
+        )
+}
+
 #[cfg(test)]
 mod test {
     use assert_matches::assert_matches;
+    use quote::quote;
     use syn::parse_quote;
 
     use super::*;
@@ -223,6 +287,70 @@ mod test {
         assert_matches!(&arguments[1].value, FieldArgumentValue::Literal(ArgumentLiteral::Variable(name ,_)) => {
             assert_eq!(name.to_string(), "variable");
         });
+    }
+
+    #[test]
+    fn test_parsing_feature_flag() {
+        let parsed: CynicArguments = parse_quote! { #[feature = "2025"] x: 1 };
+
+        let arguments = parsed.arguments.iter().collect::<Vec<_>>();
+
+        assert_eq!(arguments.len(), 1);
+        assert_eq!(arguments[0].argument_name.to_string(), "x".to_string());
+        assert_eq!(
+            arguments[0].requires_feature.as_ref().map(LitStr::value),
+            Some("2025".into())
+        );
+        assert_matches!(
+            arguments[0].value,
+            FieldArgumentValue::Literal(ArgumentLiteral::Literal(_))
+        );
+    }
+
+    #[test]
+    fn test_feature_flag_parsing_fail() {
+        let test_cases = [
+            quote! { #[foo = "fail"] x: 1 },
+            quote! { #[feature = 1] x: 1 },
+            quote! { #[feature = {}] x: 1 },
+            quote! { #[] x: 1 },
+            quote! { #[feature = "abcd", feature = "defg"] x: 1 },
+        ];
+
+        let results = test_cases
+            .iter()
+            .map(|test| syn::parse2::<CynicArguments>(test.clone()))
+            .collect::<Vec<_>>();
+
+        insta::assert_debug_snapshot!(results, @r#"
+        [
+            Err(
+                Error(
+                    "argument attributes must have the form `feature = \"xyz\"`",
+                ),
+            ),
+            Err(
+                Error(
+                    "argument attributes must have the form `feature = \"xyz\"`",
+                ),
+            ),
+            Err(
+                Error(
+                    "argument attributes must have the form `feature = \"xyz\"`",
+                ),
+            ),
+            Err(
+                Error(
+                    "unexpected end of input, expected identifier",
+                ),
+            ),
+            Err(
+                Error(
+                    "unexpected token, expected `]`",
+                ),
+            ),
+        ]
+        "#);
     }
 
     #[test]

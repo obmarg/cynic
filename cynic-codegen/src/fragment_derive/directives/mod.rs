@@ -43,6 +43,7 @@ pub fn process_directive<'a>(
                         ArgumentLiteral::Variable(var, span)
                     }
                 }),
+                requires_feature: None,
             }];
 
             let arguments = super::arguments::analyse::analyse_directive_arguments(
@@ -72,6 +73,7 @@ pub fn process_directive<'a>(
                         ArgumentLiteral::Variable(var, span)
                     }
                 }),
+                requires_feature: None,
             }];
 
             let arguments = super::arguments::analyse::analyse_directive_arguments(

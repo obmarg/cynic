@@ -1,6 +1,7 @@
 ---
 source: cynic-codegen/src/fragment_derive/arguments/tests.rs
-expression: "analyse(&schema, literals, field, Some(&format_ident!(\"MyArguments\").into()),\n        Span::call_site()).map(|o| o.arguments)"
+expression: "analyse_field_arguments(&schema, literals, field,\nSome(&format_ident!(\"MyArguments\").into()),\nSpan::call_site()).map(|o| o.arguments)"
+snapshot_kind: text
 ---
 Ok(
     [
@@ -19,6 +20,7 @@ Ok(
                     token: 1,
                 },
             ),
+            requires_feature: None,
         },
         Field {
             schema_field: InputValue {
@@ -35,6 +37,7 @@ Ok(
                     token: 3,
                 },
             ),
+            requires_feature: None,
         },
         Field {
             schema_field: InputValue {
@@ -51,6 +54,7 @@ Ok(
                     token: "hello",
                 },
             ),
+            requires_feature: None,
         },
     ],
 )
