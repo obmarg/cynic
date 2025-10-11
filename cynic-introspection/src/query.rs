@@ -83,7 +83,7 @@ pub struct Type {
     ///
     /// This will be present on input objects from servers supporting `oneOf`
     /// and null on other types
-    #[cynic(feature = "2025")]
+    #[cynic(feature = "oneOf")]
     pub is_one_of: Option<bool>,
 }
 

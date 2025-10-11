@@ -50,6 +50,7 @@ impl CapabilitiesQuery {
     pub fn capabilities(&self) -> CapabilitySet {
         CapabilitySet {
             specification_version: self.version_supported(),
+            supports_oneof: self.supports_oneof(),
         }
     }
 
@@ -75,6 +76,13 @@ impl CapabilitiesQuery {
             (None, Some(_)) => SpecificationVersion::October2021,
             _ => SpecificationVersion::June2018,
         }
+    }
+
+    fn supports_oneof(&self) -> bool {
+        self.type_type
+            .as_ref()
+            .map(|type_type| type_type.fields.iter().any(|field| field.name == "isOneOf"))
+            .unwrap_or_default()
     }
 }
 
