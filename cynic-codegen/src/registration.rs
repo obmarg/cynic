@@ -132,7 +132,7 @@ impl SchemaRegistration<'_> {
             filename.set_extension("rkyv");
 
             let optimised = self.schema()?.optimise();
-            let bytes = rkyv::to_bytes::<_, 4096>(&optimised).unwrap();
+            let bytes = rkyv::to_bytes::<rkyv::rancor::Error>(&optimised).unwrap();
 
             Ok(std::fs::write(filename, &bytes)?)
         }

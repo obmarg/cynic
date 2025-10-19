@@ -5,11 +5,10 @@ use crate::idents::RenamableFieldIdent;
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
-    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
-    archive(check_bytes)
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
 )]
 pub struct FieldName<'a> {
-    #[cfg_attr(feature = "rkyv", with(rkyv::with::AsOwned))]
+    #[cfg_attr(feature = "rkyv", rkyv(with = rkyv::with::AsOwned))]
     pub(super) graphql_name: Cow<'a, str>,
 }
 
