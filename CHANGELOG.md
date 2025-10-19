@@ -8,6 +8,26 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v4.0.0 - 2025-10-19
+
+### New Features
+
+- support feature flags on arguments (#1181)
+- automatically handle `oneOf` struct InputObjects (#1179)
+- InputObject derive now supports oneOf (#1174)
+- `impl Clone for Operation` (#1170)
+- accept `&Operation` in reqwest integrations (#1169)
+- support rename_all on `#[derive(QueryFragment)]` (#1167)
+- add `@oneOf` support to introspection (#1177)
+- support oneOf input objects in the generator (#1175)
+- introspect oneOf independently of 2025 schema (#1183)
+- update cynic-introspection for 2025 spec (#1180)
+
+### Changes
+
+- bump to 1.85, edition 2024 (#1172)
+- update rust crate rkyv to 0.8.0 (#1110)
+
 ### New features
 
 - The `QueryFragment` derive now supports the `rename_all` attribute
