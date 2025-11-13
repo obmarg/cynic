@@ -19,14 +19,16 @@ fn test_field_overrides() {
     "#;
 
     let mut field_overrides = HashMap::new();
-    field_overrides.insert("FieldNameClashes.str", "std::collections::HashMap<String, String>");
+    field_overrides.insert(
+        "FieldNameClashes.str",
+        "std::collections::HashMap<String, String>",
+    );
     let options = QueryGenOptions {
         field_overrides,
         ..Default::default()
     };
 
     assert_snapshot!(
-        document_to_fragment_structs(query, schema, &options)
-            .expect("QueryGen Failed")
+        document_to_fragment_structs(query, schema, &options).expect("QueryGen Failed")
     )
 }

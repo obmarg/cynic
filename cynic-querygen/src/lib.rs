@@ -135,7 +135,8 @@ pub fn document_to_fragment_structs(
     let (schema, typename_id) = add_builtins(schema);
 
     let type_index = Rc::new(TypeIndex::from_schema(&schema, typename_id));
-    let mut parsed_output = query_parsing::parse_query_document(&query, &type_index, &options.field_overrides)?;
+    let mut parsed_output =
+        query_parsing::parse_query_document(&query, &type_index, &options.field_overrides)?;
 
     add_schema_name(&mut parsed_output, options.schema_name.as_deref());
 

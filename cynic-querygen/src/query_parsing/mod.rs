@@ -25,7 +25,7 @@ use crate::{
 pub fn parse_query_document<'a>(
     doc: &'a ExecutableDocument,
     type_index: &Rc<TypeIndex<'a>>,
-    field_overrides: &HashMap<&str, &str>
+    field_overrides: &HashMap<&str, &str>,
 ) -> Result<Output<'a, 'a>, Error> {
     let normalised = normalisation::normalise(doc, type_index)?;
     let input_objects = InputObjects::new(&normalised);
@@ -52,7 +52,14 @@ pub fn parse_query_document<'a>(
 
     let query_fragments = sorting::topological_sort(normalised.selection_sets.iter().cloned())
         .into_iter()
-        .map(|selection| make_query_fragment(selection, &mut namers, &variable_struct_details, field_overrides))
+        .map(|selection| {
+            make_query_fragment(
+                selection,
+                &mut namers,
+                &variable_struct_details,
+                field_overrides,
+            )
+        })
         .collect::<Vec<_>>();
 
     let inline_fragments = normalised
@@ -105,7 +112,9 @@ fn make_query_fragment<'text>(
                 let field_name = field.alias.unwrap_or(schema_field.name);
 
                 let type_name_override = match &field.field {
-                    Field::Leaf => field_overrides.get(format!("{}.{}", fragment_name, field_name).as_str()).map(|o| o.to_string()),
+                    Field::Leaf => field_overrides
+                        .get(format!("{}.{}", fragment_name, field_name).as_str())
+                        .map(|o| o.to_string()),
                     Field::Composite(ss) => Some(namers.selection_sets.name_subject(ss)),
                     Field::InlineFragments(fragments) => {
                         Some(namers.inline_fragments.name_subject(fragments))
