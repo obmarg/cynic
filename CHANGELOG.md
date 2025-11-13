@@ -11,6 +11,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### New features
 
 - The `QueryFragment` derive now supports the `rename_all` attribute
+- `cynic-querygen` now has a `field_overrides` option that can be used to
+  customize the type of individual scalar fields in generated `QueryFragment`s.
 
 ### Bug Fixes
 
