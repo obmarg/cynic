@@ -103,7 +103,6 @@ fn make_query_fragment<'text>(
                 let schema_field = &field.schema_field;
 
                 let field_name = field.alias.unwrap_or(schema_field.name);
-                eprintln!("{fragment_name}.{field_name}");
 
                 let type_name_override = match &field.field {
                     Field::Leaf => field_overrides.get(format!("{}.{}", fragment_name, field_name).as_str()).map(|o| o.to_string()),
