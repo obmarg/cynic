@@ -1,0 +1,33 @@
+---
+source: cynic-querygen/tests/option-tests.rs
+expression: "document_to_fragment_structs(query, schema,\n&options).expect(\"QueryGen Failed\")"
+---
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Foo")]
+pub struct MyQuery {
+    pub clashes: Option<FieldNameClashes>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct FieldNameClashes {
+    pub str: Option<std::collections::HashMap>,
+    pub bool: Option<bool>,
+    pub i32: Option<i32>,
+    pub u32: Option<i32>,
+}
+
+#[derive(cynic::InputObject, Debug)]
+pub enum OneOfObject<'a> {
+    String(&'a str),
+    Int(i32),
+    Nested(Baz<'a>),
+}
+
+#[derive(cynic::InputObject, Debug)]
+pub struct Baz<'a> {
+    pub id: &'a cynic::Id,
+    pub a_string: &'a str,
+    pub an_optional_string: Option<&'a str>,
+}
+
+

@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::{collections::HashMap, rc::Rc};
 
 mod casings;
 mod naming;
@@ -97,6 +97,8 @@ pub enum Error {
 pub struct QueryGenOptions {
     pub schema_module_name: String,
     pub schema_name: Option<String>,
+    /// mapping of "TypeName.field_name" => "fully qualified type path" to use instead of the default scalar type.
+    pub field_overrides: HashMap<String, String>,
 }
 
 impl Default for QueryGenOptions {
@@ -104,6 +106,7 @@ impl Default for QueryGenOptions {
         QueryGenOptions {
             schema_module_name: "schema".into(),
             schema_name: None,
+            field_overrides: HashMap::default(),
         }
     }
 }
@@ -124,7 +127,7 @@ pub fn document_to_fragment_structs(
     let (schema, typename_id) = add_builtins(schema);
 
     let type_index = Rc::new(TypeIndex::from_schema(&schema, typename_id));
-    let mut parsed_output = query_parsing::parse_query_document(&query, &type_index)?;
+    let mut parsed_output = query_parsing::parse_query_document(&query, &type_index, &options.field_overrides)?;
 
     add_schema_name(&mut parsed_output, options.schema_name.as_deref());
 

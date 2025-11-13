@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::{collections::HashMap, rc::Rc};
 
 mod inputs;
 mod leaf_types;
@@ -25,6 +25,7 @@ use crate::{
 pub fn parse_query_document<'a>(
     doc: &'a ExecutableDocument,
     type_index: &Rc<TypeIndex<'a>>,
+    field_overrides: &HashMap<String, String>
 ) -> Result<Output<'a, 'a>, Error> {
     let normalised = normalisation::normalise(doc, type_index)?;
     let input_objects = InputObjects::new(&normalised);
@@ -51,7 +52,7 @@ pub fn parse_query_document<'a>(
 
     let query_fragments = sorting::topological_sort(normalised.selection_sets.iter().cloned())
         .into_iter()
-        .map(|selection| make_query_fragment(selection, &mut namers, &variable_struct_details))
+        .map(|selection| make_query_fragment(selection, &mut namers, &variable_struct_details, field_overrides))
         .collect::<Vec<_>>();
 
     let inline_fragments = normalised
@@ -84,11 +85,14 @@ fn make_query_fragment<'text>(
     selection: Rc<normalisation::SelectionSet<'text, 'text>>,
     namers: &mut Namers<'text>,
     variable_struct_details: &VariableStructDetails<'text, 'text>,
+    field_overrides: &HashMap<String, String>,
 ) -> crate::output::QueryFragment<'text, 'text> {
     use crate::output::query_fragment::{
         FieldArgument, OutputField, QueryFragment, RustOutputFieldType,
     };
     use normalisation::{Field, Selection};
+
+    let fragment_name = namers.selection_sets.name_subject(&selection);
 
     QueryFragment {
         fields: selection
@@ -98,8 +102,10 @@ fn make_query_fragment<'text>(
                 let Selection::Field(field) = selection;
                 let schema_field = &field.schema_field;
 
+                let field_name = field.alias.unwrap_or(schema_field.name);
+
                 let type_name_override = match &field.field {
-                    Field::Leaf => None,
+                    Field::Leaf => field_overrides.get(&format!("{}.{}", fragment_name, field_name)).cloned(),
                     Field::Composite(ss) => Some(namers.selection_sets.name_subject(ss)),
                     Field::InlineFragments(fragments) => {
                         Some(namers.inline_fragments.name_subject(fragments))
@@ -107,7 +113,7 @@ fn make_query_fragment<'text>(
                 };
 
                 OutputField {
-                    name: field.alias.unwrap_or(schema_field.name),
+                    name: field_name,
                     rename: field.alias.map(|_| schema_field.name).or_else(|| {
                         (schema_field.name.to_snake_case().to_camel_case() != schema_field.name)
                             .then_some(schema_field.name)
@@ -130,7 +136,7 @@ fn make_query_fragment<'text>(
             .collect(),
         variable_struct_name: variable_struct_details.variables_name_for_selection(&selection),
 
-        name: namers.selection_sets.name_subject(&selection),
+        name: fragment_name,
         target_type: selection.target_type.name().to_string(),
         schema_name: None,
     }
