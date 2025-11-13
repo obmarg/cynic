@@ -10,7 +10,7 @@ pub struct MyQuery {
 
 #[derive(cynic::QueryFragment, Debug)]
 pub struct FieldNameClashes {
-    pub str: Option<std::collections::HashMap>,
+    pub str: Option<std::collections::HashMap<String, String>>,
     pub bool: Option<bool>,
     pub i32: Option<i32>,
     pub u32: Option<i32>,
