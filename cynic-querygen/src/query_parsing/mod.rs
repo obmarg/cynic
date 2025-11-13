@@ -25,7 +25,7 @@ use crate::{
 pub fn parse_query_document<'a>(
     doc: &'a ExecutableDocument,
     type_index: &Rc<TypeIndex<'a>>,
-    field_overrides: &HashMap<String, String>
+    field_overrides: &HashMap<&str, &str>
 ) -> Result<Output<'a, 'a>, Error> {
     let normalised = normalisation::normalise(doc, type_index)?;
     let input_objects = InputObjects::new(&normalised);
@@ -85,7 +85,7 @@ fn make_query_fragment<'text>(
     selection: Rc<normalisation::SelectionSet<'text, 'text>>,
     namers: &mut Namers<'text>,
     variable_struct_details: &VariableStructDetails<'text, 'text>,
-    field_overrides: &HashMap<String, String>,
+    field_overrides: &HashMap<&str, &str>,
 ) -> crate::output::QueryFragment<'text, 'text> {
     use crate::output::query_fragment::{
         FieldArgument, OutputField, QueryFragment, RustOutputFieldType,
@@ -106,7 +106,7 @@ fn make_query_fragment<'text>(
                 eprintln!("{fragment_name}.{field_name}");
 
                 let type_name_override = match &field.field {
-                    Field::Leaf => field_overrides.get(&format!("{}.{}", fragment_name, field_name)).cloned(),
+                    Field::Leaf => field_overrides.get(format!("{}.{}", fragment_name, field_name).as_str()).map(|o| o.to_string()),
                     Field::Composite(ss) => Some(namers.selection_sets.name_subject(ss)),
                     Field::InlineFragments(fragments) => {
                         Some(namers.inline_fragments.name_subject(fragments))

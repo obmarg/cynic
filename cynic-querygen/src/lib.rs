@@ -94,15 +94,23 @@ pub enum Error {
 }
 
 #[derive(Debug)]
-pub struct QueryGenOptions {
+pub struct QueryGenOptions<'a> {
     pub schema_module_name: String,
+    /// The name of a registered schema to use inside generated `#[cynic(schema = "schema_name")]` attributes.
     pub schema_name: Option<String>,
-    /// mapping of "TypeName.field_name" => "fully qualified type path" to use instead of the default scalar type.
-    pub field_overrides: HashMap<String, String>,
+    /// Mapping of `("TypeName.fieldName", "fully::qualified::type::Path")` overrides to customize the scalar type used for specific fields.
+    ///
+    /// The field name should have the same casing as the field name in the GraphQL schema
+    /// (i.e. before conversion to snake_case). Note that the provided type override will still
+    /// be wrapped in an [`Option`] if the field is nullable in the schema.
+    ///
+    /// The override type must be a registered [custom scalar](https://cynic-rs.dev/derives/scalars#custom-scalars) for the schema scalar type
+    /// of the overridden field.
+    pub field_overrides: HashMap<&'a str, &'a str>,
 }
 
-impl Default for QueryGenOptions {
-    fn default() -> QueryGenOptions {
+impl Default for QueryGenOptions<'_> {
+    fn default() -> QueryGenOptions<'static> {
         QueryGenOptions {
             schema_module_name: "schema".into(),
             schema_name: None,
