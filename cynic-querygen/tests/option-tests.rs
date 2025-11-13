@@ -19,7 +19,7 @@ fn test_field_overrides() {
     "#;
 
     let mut field_overrides = HashMap::new();
-    field_overrides.insert("FieldNameClashes.str".into(), "std::collections::HashMap".into());
+    field_overrides.insert("FieldNameClashes.str", "std::collections::HashMap");
     let options = QueryGenOptions {
         field_overrides,
         ..Default::default()
