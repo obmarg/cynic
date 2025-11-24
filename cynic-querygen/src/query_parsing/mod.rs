@@ -18,7 +18,7 @@ use cynic_parser::{ExecutableDocument, executable as parser};
 use crate::{
     Error, TypeIndex,
     casings::CasingExt,
-    naming::Namer,
+    naming::{Nameable, Namer},
     output::{self, Output},
 };
 
@@ -99,7 +99,7 @@ fn make_query_fragment<'text>(
     };
     use normalisation::{Field, Selection};
 
-    let fragment_name = namers.selection_sets.name_subject(&selection);
+    let requested_fragment_name = selection.requested_name();
 
     QueryFragment {
         fields: selection
@@ -109,11 +109,11 @@ fn make_query_fragment<'text>(
                 let Selection::Field(field) = selection;
                 let schema_field = &field.schema_field;
 
-                let field_name = field.alias.unwrap_or(schema_field.name);
-
                 let type_name_override = match &field.field {
                     Field::Leaf => field_overrides
-                        .get(format!("{}.{}", fragment_name, field_name).as_str())
+                        // Check for field-level type overrides using the requested fragment name (before incrementing suffix),
+                        // and un-aliased field name in the schema.
+                        .get(format!("{}.{}", requested_fragment_name, schema_field.name).as_str())
                         .map(|o| o.to_string()),
                     Field::Composite(ss) => Some(namers.selection_sets.name_subject(ss)),
                     Field::InlineFragments(fragments) => {
@@ -122,7 +122,7 @@ fn make_query_fragment<'text>(
                 };
 
                 OutputField {
-                    name: field_name,
+                    name: field.alias.unwrap_or(schema_field.name),
                     rename: field.alias.map(|_| schema_field.name).or_else(|| {
                         (schema_field.name.to_snake_case().to_camel_case() != schema_field.name)
                             .then_some(schema_field.name)
@@ -145,7 +145,7 @@ fn make_query_fragment<'text>(
             .collect(),
         variable_struct_name: variable_struct_details.variables_name_for_selection(&selection),
 
-        name: fragment_name,
+        name: namers.selection_sets.name_subject(&selection),
         target_type: selection.target_type.name().to_string(),
         schema_name: None,
     }
