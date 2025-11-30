@@ -108,6 +108,7 @@ impl Error {
             }
             Error::EmptyExecutableDocument => (self.to_string(), None, Some("graphql documents should contain at least one query, mutation or subscription".into())),
             Error::EmptyTypeSystemDocument => (self.to_string(), None, Some("graphql documents should contain at least one type, schema or directive definition".into())),
+            Error::EmptySchemaCoordinate => (self.to_string(), None, Some("schema coordinates should not be empty".into())),
         }
     }
 }

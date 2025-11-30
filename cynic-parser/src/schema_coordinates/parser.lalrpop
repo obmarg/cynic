@@ -1,0 +1,92 @@
+use crate::{
+    Span,
+    schema_coordinates::*,
+};
+
+grammar<'input>(input: &'input str);
+
+pub SchemaCoordinate: SchemaCoordinate = {
+    <inner:TypeCoordinate> => {
+        SchemaCoordinate::Type(inner)
+    },
+    <inner:MemberCoordinate> => {
+        SchemaCoordinate::Member(inner)
+    },
+    <inner:ArgumentCoordinate> => {
+        SchemaCoordinate::Argument(inner)
+    },
+    <inner:DirectiveCoordinate> => {
+        SchemaCoordinate::Directive(inner)
+    },
+    <inner:DirectiveArgumentCoordinate> => {
+        SchemaCoordinate::DirectiveArgument(inner)
+    },
+}
+
+TypeCoordinate: TypeCoordinate = {
+    <name: Name> => {
+        TypeCoordinate {
+            name
+        }
+    }
+}
+
+MemberCoordinate: MemberCoordinate = {
+    <ty: TypeCoordinate> "." <name:Name> => {
+        MemberCoordinate {
+            ty,
+            name
+        }
+    }
+}
+
+ArgumentCoordinate: ArgumentCoordinate = {
+    <member: MemberCoordinate> "(" <name:Name> ":" ")" => {
+        ArgumentCoordinate {
+            member,
+            name
+        }
+    }
+}
+
+DirectiveCoordinate: DirectiveCoordinate = {
+    <start:@L> "@" <name: Name> <end:@R> => {
+        DirectiveCoordinate {
+            span: Span::new(start, end),
+            name
+        }
+    }
+}
+
+DirectiveArgumentCoordinate: DirectiveArgumentCoordinate = {
+    <directive: DirectiveCoordinate> "(" <name:Name> ":" ")" => {
+        DirectiveArgumentCoordinate {
+            directive,
+            name
+        }
+    }
+}
+
+Name: Name = {
+    <start:@L> <ident:Ident> <end:@R> => Name {
+        value: ident.into(),
+        span: Span::new(start, end)
+    }
+}
+
+extern {
+    type Location = usize;
+    type Error = crate::parser::AdditionalErrors;
+
+    enum lexer::Token<'input> {
+        ":" => lexer::Token::Colon,
+
+        "(" => lexer::Token::OpenParen,
+        ")" => lexer::Token::CloseParen,
+
+        "@" => lexer::Token::At,
+        "." => lexer::Token::Dot,
+
+        Ident => lexer::Token::Identifier(<&'input str>),
+    }
+}

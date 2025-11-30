@@ -60,6 +60,9 @@ pub enum Error {
 
     /// The GraphQl document was empty
     EmptyExecutableDocument,
+
+    /// The schema coordinate was empty
+    EmptySchemaCoordinate,
 }
 
 impl Error {
@@ -79,7 +82,9 @@ impl Error {
             Error::MalformedStringLiteral(error) => error.span().into(),
             Error::MalformedDirectiveLocation(lhs, _, rhs) => Span::new(*lhs, *rhs).into(),
             Error::VariableInConstPosition(lhs, _, rhs) => Span::new(*lhs, *rhs).into(),
-            Error::EmptyExecutableDocument | Error::EmptyTypeSystemDocument => None,
+            Error::EmptyExecutableDocument
+            | Error::EmptyTypeSystemDocument
+            | Error::EmptySchemaCoordinate => None,
         }
     }
 }
@@ -97,6 +102,7 @@ impl std::error::Error for Error {
             | Error::EmptyTypeSystemDocument
             | Error::EmptyExecutableDocument => None,
             Error::Lexical(error) => Some(error),
+            Error::EmptySchemaCoordinate => todo!(),
         }
     }
 }
@@ -176,6 +182,9 @@ impl fmt::Display for Error {
                     f,
                     "the graphql document was empty, please provide at least one definition"
                 )
+            }
+            Error::EmptySchemaCoordinate => {
+                write!(f, "the schema coordinate was empty")
             }
         }
     }
