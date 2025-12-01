@@ -1,14 +1,14 @@
 use seed::{prelude::*, *};
 
-pub struct Model {
+pub struct Model<'a> {
     schema_url: Option<String>,
     schema_data: Option<String>,
     query: String,
-    opts: cynic_querygen::QueryGenOptions,
+    opts: cynic_querygen::QueryGenOptions<'a>,
     generated_code: Result<String, cynic_querygen::Error>,
 }
 
-impl Model {
+impl<'a> Model<'a> {
     pub fn new_from_url(url: String) -> Self {
         Model {
             schema_url: Some(url),
@@ -34,8 +34,8 @@ impl Model {
     }
 }
 
-impl Default for Model {
-    fn default() -> Model {
+impl Default for Model<'_> {
+    fn default() -> Model<'static> {
         Model {
             schema_url: None,
             schema_data: None,
