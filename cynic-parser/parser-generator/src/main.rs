@@ -5,7 +5,17 @@ fn main() {
         .process()
         .unwrap();
 
-    for input in ["../src/parser/executable.rs", "../src/parser/schema.rs"] {
+    lalrpop::Configuration::new()
+        .set_in_dir("../src/schema_coordinates")
+        .set_out_dir("../src/schema_coordinates")
+        .process()
+        .unwrap();
+
+    for input in [
+        "../src/parser/executable.rs",
+        "../src/parser/schema.rs",
+        "../src/schema_coordinates/parser.rs",
+    ] {
         std::process::Command::new("cargo")
             .args(["fmt", "--", input])
             .spawn()

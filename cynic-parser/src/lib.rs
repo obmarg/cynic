@@ -1,5 +1,6 @@
 pub mod common;
 pub mod executable;
+pub mod schema_coordinates;
 pub mod type_system;
 pub mod values;
 
@@ -19,6 +20,7 @@ pub use errors::Report;
 pub use self::{
     errors::Error,
     executable::ExecutableDocument,
+    schema_coordinates::{SchemaCoordinate, parse_schema_coordinate},
     span::Span,
     type_system::TypeSystemDocument,
     values::{ConstValue, Value},
