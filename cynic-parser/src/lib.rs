@@ -20,6 +20,7 @@ pub use errors::Report;
 pub use self::{
     errors::Error,
     executable::ExecutableDocument,
+    schema_coordinates::{SchemaCoordinate, parse_schema_coordinate},
     span::Span,
     type_system::TypeSystemDocument,
     values::{ConstValue, Value},
