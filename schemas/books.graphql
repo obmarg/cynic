@@ -4,7 +4,9 @@ schema {
   subscription: SubscriptionRoot
 }
 
-# Directs the executor to query only when the field exists.
+"""
+Directs the executor to query only when the field exists.
+"""
 directive @ifdef on FIELD
 
 type Book {
