@@ -1,14 +1,14 @@
 use insta::assert_snapshot;
 
-use cynic_querygen::{QueryGenOptions, document_to_fragment_structs};
-
 #[test]
 fn mutation_with_scalar_result_and_input() {
     let schema = include_str!("../../schemas/raindancer.graphql");
     let query = include_str!("queries/misc/mutation_with_scalar_result_and_input.graphql");
 
     assert_snapshot!(
-        document_to_fragment_structs(query, schema, &QueryGenOptions::default())
+        cynic_querygen::Generator::new(schema)
+            .expect("schema parse failed")
+            .generate(query)
             .expect("QueryGen Failed")
     )
 }
@@ -19,7 +19,9 @@ fn book_subscription_test() {
     let query = include_str!("queries/misc/books-subscription.graphql");
 
     assert_snapshot!(
-        document_to_fragment_structs(query, schema, &QueryGenOptions::default())
+        cynic_querygen::Generator::new(schema)
+            .expect("schema parse failed")
+            .generate(query)
             .expect("QueryGen Failed")
     )
 }
@@ -30,7 +32,9 @@ fn keyword_renames() {
     let query = include_str!("queries/misc/keyword-renames.graphql");
 
     assert_snapshot!(
-        document_to_fragment_structs(query, schema, &QueryGenOptions::default())
+        cynic_querygen::Generator::new(schema)
+            .expect("schema parse failed")
+            .generate(query)
             .expect("QueryGen Failed")
     )
 }
@@ -41,7 +45,9 @@ fn test_scalar_casing() {
     let query = include_str!("queries/misc/scalar-casing.graphql");
 
     assert_snapshot!(
-        document_to_fragment_structs(query, schema, &QueryGenOptions::default())
+        cynic_querygen::Generator::new(schema)
+            .expect("schema parse failed")
+            .generate(query)
             .expect("QueryGen Failed")
     )
 }
@@ -56,7 +62,9 @@ fn test_recursive_inputs() {
     "#;
 
     assert_snapshot!(
-        document_to_fragment_structs(query, schema, &QueryGenOptions::default())
+        cynic_querygen::Generator::new(schema)
+            .expect("schema parse failed")
+            .generate(query)
             .expect("QueryGen Failed")
     )
 }
@@ -72,7 +80,9 @@ fn test_string_escaping() {
     "#;
 
     assert_snapshot!(
-        document_to_fragment_structs(query, schema, &QueryGenOptions::default())
+        cynic_querygen::Generator::new(schema)
+            .expect("schema parse failed")
+            .generate(query)
             .expect("QueryGen Failed")
     )
 }
@@ -83,15 +93,11 @@ fn test_with_named_schema() {
     let query = include_str!("queries/github/query-with-all-derives.graphql");
 
     assert_snapshot!(
-        document_to_fragment_structs(
-            query,
-            schema,
-            &QueryGenOptions {
-                schema_name: Some("my-schema".into()),
-                ..QueryGenOptions::default()
-            }
-        )
-        .expect("QueryGen Failed")
+        cynic_querygen::Generator::new(schema)
+            .expect("schema parse failed")
+            .with_schema_name("my-schema")
+            .generate(query)
+            .expect("QueryGen Failed")
     )
 }
 
@@ -130,7 +136,9 @@ fn pascal_type_renaming() {
     "#;
 
     assert_snapshot!(
-        document_to_fragment_structs(query, schema, &QueryGenOptions::default())
+        cynic_querygen::Generator::new(schema)
+            .expect("schema parse failed")
+            .generate(query)
             .expect("QueryGen Failed")
     )
 }
@@ -141,8 +149,10 @@ fn test_keyword_arguments() {
     let query = include_str!("queries/misc/keyword-argument.graphql");
 
     assert_snapshot!(
-        document_to_fragment_structs(query, schema, &QueryGenOptions::default())
-            .expect("QueryGen Failed")
+        cynic_querygen::Generator::new(schema)
+            .expect("schema parse failed")
+            .generate(query)
+            .expect("querygen failed")
     )
 }
 
@@ -152,7 +162,9 @@ fn test_recursive_input_lifetimes() {
     let query = include_str!("queries/misc/recursive_input_lifetimes_query.graphql");
 
     assert_snapshot!(
-        document_to_fragment_structs(query, schema, &QueryGenOptions::default())
+        cynic_querygen::Generator::new(schema)
+            .expect("schema parse failed")
+            .generate(query)
             .expect("QueryGen Failed for recursive input lifetimes test")
     )
 }
@@ -167,7 +179,9 @@ fn test_oneof_inputs() {
     "#;
 
     assert_snapshot!(
-        document_to_fragment_structs(query, schema, &QueryGenOptions::default())
-            .expect("QueryGen Failed")
+        cynic_querygen::Generator::new(schema)
+            .expect("schema parse failed")
+            .generate(query)
+            .expect("querygen failed")
     )
 }

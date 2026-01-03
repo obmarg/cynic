@@ -2,6 +2,7 @@ use std::path::PathBuf;
 
 use clap::{Args, Parser, Subcommand, ValueEnum};
 use colored::Colorize;
+use cynic_querygen::Generator;
 
 mod introspect;
 
@@ -20,15 +21,9 @@ fn main() {
             let schema = std::fs::read_to_string(&args.schema).unwrap();
             let query = std::fs::read_to_string(&args.query).unwrap();
 
-            println!(
-                "{}",
-                cynic_querygen::document_to_fragment_structs(
-                    query,
-                    schema,
-                    &cynic_querygen::QueryGenOptions::default()
-                )
-                .unwrap()
-            );
+            let generator = Generator::new(schema).unwrap();
+
+            println!("{}", generator.generate(query).unwrap());
         }
         None => {}
     }

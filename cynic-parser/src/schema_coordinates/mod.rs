@@ -71,11 +71,19 @@ impl SchemaCoordinate {
         }
     }
 
+    pub fn is_ty(&self) -> bool {
+        matches!(self, SchemaCoordinate::Type(_))
+    }
+
     pub fn as_member(&self) -> Option<&MemberCoordinate> {
         match self {
             SchemaCoordinate::Member(inner) => Some(inner),
             _ => None,
         }
+    }
+
+    pub fn is_member(&self) -> bool {
+        matches!(self, SchemaCoordinate::Member(_))
     }
 
     pub fn as_argument(&self) -> Option<&ArgumentCoordinate> {
@@ -85,6 +93,10 @@ impl SchemaCoordinate {
         }
     }
 
+    pub fn is_argument(&self) -> bool {
+        matches!(self, SchemaCoordinate::Argument(_))
+    }
+
     pub fn as_directive(&self) -> Option<&DirectiveCoordinate> {
         match self {
             SchemaCoordinate::Directive(inner) => Some(inner),
@@ -92,11 +104,19 @@ impl SchemaCoordinate {
         }
     }
 
+    pub fn is_directive(&self) -> bool {
+        matches!(self, SchemaCoordinate::Directive(_))
+    }
+
     pub fn as_directive_argument(&self) -> Option<&DirectiveArgumentCoordinate> {
         match self {
             SchemaCoordinate::DirectiveArgument(inner) => Some(inner),
             _ => None,
         }
+    }
+
+    pub fn is_directive_argument(&self) -> bool {
+        matches!(self, SchemaCoordinate::DirectiveArgument(_))
     }
 }
 
