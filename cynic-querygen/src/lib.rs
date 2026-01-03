@@ -6,6 +6,7 @@ mod output;
 mod query_parsing;
 mod schema;
 
+use cynic_parser::{SchemaCoordinate, type_system::ids::FieldDefinitionId};
 use output::Output;
 use schema::{GraphPath, TypeIndex, add_builtins};
 
@@ -93,11 +94,13 @@ pub enum Error {
     MissingTypeCondition,
 }
 
-#[derive(Debug)]
-pub struct QueryGenOptions<'a> {
-    pub schema_module_name: String,
+pub struct Generator {
     /// The name of a registered schema to use inside generated `#[cynic(schema = "schema_name")]` attributes.
-    pub schema_name: Option<String>,
+    schema_name: Option<String>,
+    /// The parsed schema that will be used to generate documents
+    schema: cynic_parser::TypeSystemDocument,
+    /// The FieldDefinitionId of the __typename field in the schema.
+    typename_id: FieldDefinitionId,
     /// Mapping of `("TypeName.fieldName", "fully::qualified::type::Path")` overrides to customize the scalar type used for specific fields.
     ///
     /// The field name should have the same casing as the field name in the GraphQL schema
@@ -106,85 +109,241 @@ pub struct QueryGenOptions<'a> {
     ///
     /// The override type must be a registered [custom scalar](https://cynic-rs.dev/derives/scalars#custom-scalars) for the schema scalar type
     /// of the overridden field.
-    pub field_overrides: HashMap<&'a str, &'a str>,
+    overrides: OverrideMap,
 }
 
-impl Default for QueryGenOptions<'_> {
-    fn default() -> QueryGenOptions<'static> {
+type OverrideMap = HashMap<SchemaCoordinate, String>;
+
+impl Generator {
+    pub fn new(schema: impl AsRef<str>) -> Result<Self, SchemaParseError> {
+        let schema = cynic_parser::parse_type_system_document(schema.as_ref())?;
+        let (schema, typename_id) = add_builtins(schema);
+
+        Ok(Generator {
+            schema_name: None,
+            schema,
+            typename_id,
+            overrides: HashMap::default(),
+        })
+    }
+
+    /// Provides the name of a registered schema to use inside generated `#[cynic(schema = "schema_name")]` attributes.
+    pub fn with_schema_name(mut self, schema_name: impl Into<String>) -> Self {
+        self.schema_name = Some(schema_name.into());
+        self
+    }
+
+    /// Provides the name of a registered schema to use inside generated `#[cynic(schema = "schema_name")]` attributes.
+    pub fn set_schema_name(&mut self, schema_name: impl Into<String>) {
+        self.schema_name = Some(schema_name.into());
+    }
+
+    /// Sets an override to the code that this `Generator` will generate.
+    ///
+    /// The `coordinate` argument should be set to a valid [schema coordinate][1] - note that
+    /// currently only member coordinates are currently supported by the generator.
+    ///
+    /// ### Member Coordinate Behaviour
+    ///
+    /// The field name should have the same casing as the field name in the GraphQL schema (i.e.
+    /// before conversion to snake_case). Note that the provided type override will still be
+    /// wrapped in an [`Option`] if the field is nullable in the schema.
+    ///
+    /// The replacement type must be a registered [custom scalar][2] for the schema scalar type of
+    /// the overridden field.
+    ///
+    /// [1]: https://spec.graphql.org/September2025/#sec-Schema-Coordinates
+    /// [2]: https://cynic-rs.dev/derives/scalars#custom-scalars
+    pub fn with_override(
+        mut self,
+        coordinate: impl AsRef<str>,
+        replacement: impl Into<String>,
+    ) -> Result<Self, InvalidSchemaCoordinate> {
+        self.set_override(coordinate, replacement)?;
+
+        Ok(self)
+    }
+
+    /// Sets many overrides to the code that this `Generator` will generate.
+    ///
+    /// See [`Generator::with_override`] for more details on overrides.
+    pub fn with_overrides<Iter, Coord, Replacement>(
+        mut self,
+        iter: Iter,
+    ) -> Result<Self, InvalidSchemaCoordinate>
+    where
+        Iter: IntoIterator<Item = (Coord, Replacement)>,
+        Coord: AsRef<str>,
+        Replacement: Into<String>,
+    {
+        for (coordinate, replacement) in iter.into_iter() {
+            self.set_override(coordinate, replacement)?;
+        }
+
+        Ok(self)
+    }
+
+    /// Sets an override in the code that this `Generator` will generate.
+    ///
+    /// The `coordinate` argument should be set to a valid [schema coordinate][1] - note that
+    /// currently only member coordinates are currently supported by the generator.
+    ///
+    /// ### Member Coordinate Behaviour
+    ///
+    /// The field name should have the same casing as the field name in the GraphQL schema (i.e.
+    /// before conversion to snake_case). Note that the provided type override will still be
+    /// wrapped in an [`Option`] if the field is nullable in the schema.
+    ///
+    /// The replacement type must be a registered [custom scalar][2] for the schema scalar type of
+    /// the overridden field.
+    ///
+    /// [1]: https://spec.graphql.org/September2025/#sec-Schema-Coordinates
+    /// [2]: https://cynic-rs.dev/derives/scalars#custom-scalars
+    pub fn set_override(
+        &mut self,
+        coordinate: impl AsRef<str>,
+        replacement: impl Into<String>,
+    ) -> Result<(), InvalidSchemaCoordinate> {
+        let coordinate = cynic_parser::parse_schema_coordinate(coordinate.as_ref())?;
+
+        if !coordinate.is_member() {
+            return Err(InvalidSchemaCoordinate::UnsupportedCoordinate(coordinate));
+        }
+
+        self.overrides.insert(coordinate, replacement.into());
+
+        Ok(())
+    }
+
+    /// Sets many overrides to the code that this `Generator` will generate.
+    ///
+    /// See [`Generator::set_override`] for more details on overrides.
+    pub fn set_overrides<Iter, Coord, Replacement>(
+        &mut self,
+        iter: Iter,
+    ) -> Result<(), InvalidSchemaCoordinate>
+    where
+        Iter: IntoIterator<Item = (Coord, Replacement)>,
+        Coord: AsRef<str>,
+        Replacement: Into<String>,
+    {
+        for (coordinate, replacement) in iter.into_iter() {
+            self.set_override(coordinate, replacement)?;
+        }
+
+        Ok(())
+    }
+
+    /// Generates rust code for the provided query
+    pub fn generate(&self, query: impl AsRef<str>) -> Result<String, Error> {
+        fn generate_impl(generator: &Generator, query: &str) -> Result<String, Error> {
+            use std::fmt::Write;
+
+            let query =
+                cynic_parser::parse_executable_document(query).map_err(Error::QueryParseError)?;
+
+            let type_index = Rc::new(TypeIndex::from_schema(
+                &generator.schema,
+                generator.typename_id,
+            ));
+            let mut parsed_output =
+                query_parsing::parse_query_document(&query, &type_index, &generator.overrides)?;
+
+            add_schema_name(&mut parsed_output, generator.schema_name.as_deref());
+
+            let mut output = String::new();
+
+            let input_objects_need_lifetime = parsed_output
+                .input_objects
+                .iter()
+                .map(|io| {
+                    (
+                        io.name.as_str(),
+                        io.fields.iter().any(|f| f.type_spec.contains_lifetime_a),
+                    )
+                })
+                .collect();
+            for variables_struct in parsed_output.variables_structs {
+                writeln!(
+                    output,
+                    "{}",
+                    output::VariablesStructForDisplay {
+                        variables_struct: &variables_struct,
+                        input_objects_need_lifetime: &input_objects_need_lifetime
+                    }
+                )
+                .unwrap();
+            }
+
+            for fragment in parsed_output.query_fragments {
+                writeln!(output, "{}", fragment).unwrap();
+            }
+
+            for fragment in parsed_output.inline_fragments {
+                writeln!(output, "{}", fragment).unwrap();
+            }
+
+            for en in parsed_output.enums {
+                writeln!(output, "{}", en).unwrap();
+            }
+
+            for input_object in parsed_output.input_objects {
+                writeln!(output, "{}", input_object).unwrap();
+            }
+
+            for scalar in parsed_output.scalars {
+                writeln!(output, "{}", scalar).unwrap();
+            }
+
+            Ok(output)
+        }
+        generate_impl(self, query.as_ref())
+    }
+}
+
+#[derive(thiserror::Error, Debug)]
+#[error(transparent)]
+pub struct SchemaParseError(#[from] cynic_parser::Error);
+
+#[derive(thiserror::Error, Debug)]
+pub enum InvalidSchemaCoordinate {
+    #[error(transparent)]
+    ParseError(#[from] cynic_parser::Error),
+    #[error("Unsupported schema coordinate: {0}")]
+    UnsupportedCoordinate(SchemaCoordinate),
+}
+
+#[derive(Debug)]
+#[deprecated(since = "3.14.0", note = "use Generator instead")]
+pub struct QueryGenOptions {
+    pub schema_module_name: String,
+    /// The name of a registered schema to use inside generated `#[cynic(schema = "schema_name")]` attributes.
+    pub schema_name: Option<String>,
+}
+
+#[expect(deprecated)]
+impl Default for QueryGenOptions {
+    fn default() -> QueryGenOptions {
         QueryGenOptions {
             schema_module_name: "schema".into(),
             schema_name: None,
-            field_overrides: HashMap::default(),
         }
     }
 }
 
+#[expect(deprecated)]
+#[deprecated(since = "3.14.0", note = "use Generator::xxx instead")]
 pub fn document_to_fragment_structs(
     query: impl AsRef<str>,
     schema: impl AsRef<str>,
     options: &QueryGenOptions,
 ) -> Result<String, Error> {
-    use std::fmt::Write;
-
-    let schema = cynic_parser::parse_type_system_document(schema.as_ref())
-        .map_err(Error::SchemaParseError)?;
-
-    let query =
-        cynic_parser::parse_executable_document(query.as_ref()).map_err(Error::QueryParseError)?;
-
-    let (schema, typename_id) = add_builtins(schema);
-
-    let type_index = Rc::new(TypeIndex::from_schema(&schema, typename_id));
-    let mut parsed_output =
-        query_parsing::parse_query_document(&query, &type_index, &options.field_overrides)?;
-
-    add_schema_name(&mut parsed_output, options.schema_name.as_deref());
-
-    let mut output = String::new();
-
-    let input_objects_need_lifetime = parsed_output
-        .input_objects
-        .iter()
-        .map(|io| {
-            (
-                io.name.as_str(),
-                io.fields.iter().any(|f| f.type_spec.contains_lifetime_a),
-            )
-        })
-        .collect();
-    for variables_struct in parsed_output.variables_structs {
-        writeln!(
-            output,
-            "{}",
-            output::VariablesStructForDisplay {
-                variables_struct: &variables_struct,
-                input_objects_need_lifetime: &input_objects_need_lifetime
-            }
-        )
-        .unwrap();
+    let mut generator = Generator::new(schema).map_err(|e| Error::SchemaParseError(e.0))?;
+    if let Some(schema_name) = &options.schema_name {
+        generator.set_schema_name(schema_name);
     }
-
-    for fragment in parsed_output.query_fragments {
-        writeln!(output, "{}", fragment).unwrap();
-    }
-
-    for fragment in parsed_output.inline_fragments {
-        writeln!(output, "{}", fragment).unwrap();
-    }
-
-    for en in parsed_output.enums {
-        writeln!(output, "{}", en).unwrap();
-    }
-
-    for input_object in parsed_output.input_objects {
-        writeln!(output, "{}", input_object).unwrap();
-    }
-
-    for scalar in parsed_output.scalars {
-        writeln!(output, "{}", scalar).unwrap();
-    }
-
-    Ok(output)
+    // TODO: use options
+    generator.generate(query)
 }
 
 fn add_schema_name(output: &mut Output, schema_name: Option<&str>) {

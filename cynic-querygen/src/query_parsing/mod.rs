@@ -1,4 +1,4 @@
-use std::{collections::HashMap, rc::Rc};
+use std::rc::Rc;
 
 mod inputs;
 mod leaf_types;
@@ -13,10 +13,10 @@ use variables::VariableStructDetails;
 pub use normalisation::{Directive, Variable};
 pub use value::{LiteralContext, TypedValue};
 
-use cynic_parser::{ExecutableDocument, executable as parser};
+use cynic_parser::{ExecutableDocument, SchemaCoordinate, executable as parser};
 
 use crate::{
-    Error, TypeIndex,
+    Error, OverrideMap, TypeIndex,
     casings::CasingExt,
     naming::{Nameable, Namer},
     output::{self, Output},
@@ -25,7 +25,7 @@ use crate::{
 pub fn parse_query_document<'a>(
     doc: &'a ExecutableDocument,
     type_index: &Rc<TypeIndex<'a>>,
-    field_overrides: &HashMap<&str, &str>,
+    overrides: &OverrideMap,
 ) -> Result<Output<'a, 'a>, Error> {
     let normalised = normalisation::normalise(doc, type_index)?;
     let input_objects = InputObjects::new(&normalised);
@@ -53,12 +53,7 @@ pub fn parse_query_document<'a>(
     let query_fragments = sorting::topological_sort(normalised.selection_sets.iter().cloned())
         .into_iter()
         .map(|selection| {
-            make_query_fragment(
-                selection,
-                &mut namers,
-                &variable_struct_details,
-                field_overrides,
-            )
+            make_query_fragment(selection, &mut namers, &variable_struct_details, overrides)
         })
         .collect::<Vec<_>>();
 
@@ -92,7 +87,7 @@ fn make_query_fragment<'text>(
     selection: Rc<normalisation::SelectionSet<'text, 'text>>,
     namers: &mut Namers<'text>,
     variable_struct_details: &VariableStructDetails<'text, 'text>,
-    field_overrides: &HashMap<&str, &str>,
+    overrides: &OverrideMap,
 ) -> crate::output::QueryFragment<'text, 'text> {
     use crate::output::query_fragment::{
         FieldArgument, OutputField, QueryFragment, RustOutputFieldType,
@@ -110,10 +105,13 @@ fn make_query_fragment<'text>(
                 let schema_field = &field.schema_field;
 
                 let type_name_override = match &field.field {
-                    Field::Leaf => field_overrides
+                    Field::Leaf => overrides
                         // Check for field-level type overrides using the requested fragment name (before incrementing suffix),
                         // and un-aliased field name in the schema.
-                        .get(format!("{}.{}", requested_fragment_name, schema_field.name).as_str())
+                        .get(&SchemaCoordinate::member(
+                            requested_fragment_name.clone(),
+                            schema_field.name,
+                        ))
                         .map(|o| o.to_string()),
                     Field::Composite(ss) => Some(namers.selection_sets.name_subject(ss)),
                     Field::InlineFragments(fragments) => {

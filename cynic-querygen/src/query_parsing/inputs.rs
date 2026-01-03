@@ -122,7 +122,6 @@ fn lifetimed_objects<'a>(document: &NormalisedDocument<'a, 'a>) -> HashSet<&'a s
                 if let Ok(InputType::InputObject(object)) =
                     stack.last().unwrap().inner_ref().lookup()
                 {
-                    println!("checking fields of {}", object.name);
                     for field in &object.fields {
                         if !visited.contains(&field.value_type.inner_name()) {
                             stack.push(field.value_type.clone());
@@ -130,8 +129,6 @@ fn lifetimed_objects<'a>(document: &NormalisedDocument<'a, 'a>) -> HashSet<&'a s
                             continue 'outer;
                         }
                     }
-
-                    println!("visiting {}", object.name);
 
                     // If we get here all child field types have been seen.
                     // We need to check whether any child fields need a lifetime...

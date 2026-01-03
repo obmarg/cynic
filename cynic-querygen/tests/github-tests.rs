@@ -1,7 +1,5 @@
 use insta::assert_snapshot;
 
-use cynic_querygen::{QueryGenOptions, document_to_fragment_structs};
-
 macro_rules! test_query {
     ($name:ident, $filename:literal) => {
         #[test]
@@ -10,7 +8,9 @@ macro_rules! test_query {
             let query = include_str!(concat!("queries/github/", $filename));
 
             assert_snapshot!(
-                document_to_fragment_structs(query, schema, &QueryGenOptions::default())
+                cynic_querygen::Generator::new(schema)
+                    .expect("schema parse failed")
+                    .generate(query)
                     .expect("QueryGen Failed")
             )
         }
