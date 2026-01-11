@@ -1,14 +1,15 @@
 use seed::{prelude::*, *};
 
-pub struct Model<'a> {
+pub struct Model {
     schema_url: Option<String>,
     schema_data: Option<String>,
     query: String,
-    opts: cynic_querygen::QueryGenOptions<'a>,
+    #[allow(deprecated)]
+    opts: cynic_querygen::QueryGenOptions,
     generated_code: Result<String, cynic_querygen::Error>,
 }
 
-impl<'a> Model<'a> {
+impl Model {
     pub fn new_from_url(url: String) -> Self {
         Model {
             schema_url: Some(url),
@@ -23,6 +24,7 @@ impl<'a> Model<'a> {
         }
     }
 
+    #[allow(deprecated)]
     fn generate_code(&mut self) {
         if !self.query.is_empty() && self.schema_data.is_some() {
             self.generated_code = cynic_querygen::document_to_fragment_structs(
@@ -34,8 +36,8 @@ impl<'a> Model<'a> {
     }
 }
 
-impl Default for Model<'_> {
-    fn default() -> Model<'static> {
+impl Default for Model {
+    fn default() -> Model {
         Model {
             schema_url: None,
             schema_data: None,

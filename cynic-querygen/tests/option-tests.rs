@@ -1,8 +1,4 @@
-use std::collections::HashMap;
-
 use insta::assert_snapshot;
-
-use cynic_querygen::{QueryGenOptions, document_to_fragment_structs};
 
 #[test]
 fn test_field_overrides() {
@@ -18,17 +14,13 @@ fn test_field_overrides() {
       }
     "#;
 
-    let mut field_overrides = HashMap::new();
-    field_overrides.insert(
-        "FieldNameClashes.str",
-        "std::collections::HashMap<String, String>",
-    );
-    let options = QueryGenOptions {
-        field_overrides,
-        ..Default::default()
-    };
+    let generator = cynic_querygen::Generator::new(schema)
+        .expect("schema parse failed")
+        .with_override(
+            "FieldNameClashes.str",
+            "std::collections::HashMap<String, String>",
+        )
+        .unwrap();
 
-    assert_snapshot!(
-        document_to_fragment_structs(query, schema, &options).expect("QueryGen Failed")
-    )
+    assert_snapshot!(generator.generate(query).expect("QueryGen Failed"))
 }

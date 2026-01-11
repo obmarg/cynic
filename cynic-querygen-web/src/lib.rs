@@ -14,7 +14,7 @@ mod view;
 // ------ ------
 
 // `init` describes what should happen when your app started.
-fn init(_: Url, _: &mut impl Orders<Msg>) -> Model<'static> {
+fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
     Model::default()
 }
 
@@ -23,13 +23,13 @@ fn init(_: Url, _: &mut impl Orders<Msg>) -> Model<'static> {
 // ------ ------
 
 // `Model` describes our app state.
-enum Model<'a> {
+enum Model {
     EntryPage(entry_page::Model),
-    GraphiqlPage(graphiql_page::Model<'a>),
+    GraphiqlPage(graphiql_page::Model),
 }
 
-impl Default for Model<'_> {
-    fn default() -> Model<'static> {
+impl Default for Model {
+    fn default() -> Model {
         Model::EntryPage(entry_page::Model::default())
     }
 }
