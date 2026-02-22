@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+- Update `reqwest` to 0.13
+
 ### New features
 
 - The `QueryFragment` derive now supports the `rename_all` attribute

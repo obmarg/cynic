@@ -36,7 +36,7 @@ thiserror = "1.0.30"
 surf = { version = "2.3", default-features = false, optional = true }
 
 # Reqwest feature deps
-reqwest = { version = "0.12", optional = true, features = [
+reqwest = { version = "0.13", optional = true, features = [
     "json",
 ], default-features = false }
 
