@@ -6,8 +6,6 @@ use std::{
 
 use indoc::{formatdoc, writedoc};
 
-use cynic_querygen::{document_to_fragment_structs, QueryGenOptions};
-
 fn main() {
     let starwars_schema = Schema::from_repo_schemas(
         "starwars",
@@ -321,11 +319,11 @@ impl TestCase {
         let schema = load_file(&self.schema.path_for_loading);
         let query = load_file(&self.query_path);
 
-        let options = QueryGenOptions {
-            schema_name: Some(self.schema.schema_name.clone()),
-            ..QueryGenOptions::default()
-        };
-        let query_code = document_to_fragment_structs(query, schema, &options).unwrap();
+        let query_code = cynic_querygen::Generator::new(&schema)
+            .unwrap()
+            .with_schema_name(&self.schema.schema_name)
+            .generate(query)
+            .unwrap();
 
         let test_filename = {
             let mut path = self.query_path.clone();
