@@ -9,7 +9,7 @@
   <p>
     <a href="https://crates.io/crates/cynic"><img alt="Crate Info" src="https://img.shields.io/crates/v/cynic.svg"/></a>
     <a href="https://docs.rs/cynic/"><img alt="API Docs" src="https://img.shields.io/badge/docs.rs-cynic-green"/></a>
-    <a href="https://discord.gg/Y5xDmDP"><img alt="Discord Chat" src="https://img.shields.io/discord/754633560933269544"/></a>
+    <a href="https://web.libera.chat/#cynic"><img alt="IRC Room" src="https://img.shields.io/badge/Chat%20Room-5555FF"/></a>
   </p>
 
   <h4>
@@ -80,6 +80,16 @@ Cynic is documented in a few places:
 - Most of the JSON decoding APIs were taken from [Json.Decode in Elm][4].
 - Deriving code from structs is a fairly common Rust pattern, though [serde][5]
   in particular provided inspiration for the derive APIs.
+
+### Getting Help
+
+If you want help with cynic you can join the #cynic chat room on
+IRC using any of these options:
+
+- [A Web UI](https://web.libera.chat/#cynic)
+- [Using this link if you have an IRC client](ircs://irc.libera.chat:6697/#cynic)
+- [Selecting a client from joinrc.at](https://joinirc.at/ircs://irc.libera.chat:6697/#cynic)
+- Joining #cynic on irc.libera.chat if you know what you're doing
 
 [1]: https://generator.cynic-rs.dev
 [2]: https://github.com/graphql-rust/graphql-client
