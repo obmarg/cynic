@@ -293,6 +293,7 @@ impl<'a, SchemaType, VariablesFields> InlineFragmentBuilder<'a, SchemaType, Vari
     }
 }
 
+/// Builds an input (usually an argument or a type nested inside an argument) in a query
 pub struct InputBuilder<'a, SchemaType, VariablesFields> {
     destination: InputLiteralContainer<'a>,
     context: BuilderContext<'a>,
@@ -472,6 +473,7 @@ impl<'a> InputLiteralContainer<'a> {
     }
 }
 
+/// Builds a directive in a query
 pub struct DirectiveBuilder<'a, DirectiveMarker, VariablesFields> {
     arguments: &'a mut Vec<Argument>,
     context: BuilderContext<'a>,
