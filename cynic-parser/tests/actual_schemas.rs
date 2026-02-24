@@ -15,6 +15,16 @@ macro_rules! schema_tests {
             }
 
             #[test]
+            fn roundtrip() {
+                let parsed = cynic_parser::parse_type_system_document(SCHEMA)
+                    .map_err(|error| error.to_report(SCHEMA))
+                    .unwrap();
+                let sdl = parsed.to_sdl();
+
+                assert_eq!(SCHEMA, sdl);
+            }
+
+            #[test]
             fn double_roundtrip() {
                 let parsed = cynic_parser::parse_type_system_document(SCHEMA)
                     .map_err(|error| error.to_report(SCHEMA))
