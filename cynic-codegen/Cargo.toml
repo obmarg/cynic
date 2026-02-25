@@ -27,7 +27,7 @@ proc-macro2 = "1.0"
 quote = "1.0"
 strsim = "0.10.0"
 syn = { workspace = true, features = ["visit-mut"] }
-thiserror = "1"
+thiserror = "2"
 
 rkyv = { version = "0.8.0", features = ["bytecheck"], optional = true }
 
