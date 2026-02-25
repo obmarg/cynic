@@ -19,7 +19,7 @@ sdl = ["indenter"]
 
 [dependencies]
 indenter = { version = "0.3.3", optional = true }
-thiserror = "1"
+thiserror = "2"
 
 [dependencies.cynic]
 path = "../cynic"
