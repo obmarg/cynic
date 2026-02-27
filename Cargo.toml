@@ -36,7 +36,7 @@ edition = "2024"
 homepage = "https://cynic-rs.dev"
 repository = "https://codeberg.org/obmarg/cynic"
 license = "MPL-2.0"
-version = "3.12.0"
+version = "3.13.0"
 rust-version = "1.85"
 
 [workspace.dependencies]
@@ -45,8 +45,8 @@ insta = { version = "1", features = ["yaml", "json"] }
 rstest = "0.23"
 syn = "2"
 
-cynic-parser = { path = "cynic-parser", version = "0.10.0" }
-cynic-parser-deser-macros = { path = "cynic-parser-deser-macros", version = "0.10" }
+cynic-parser = { path = "cynic-parser", version = "0.11.0" }
+cynic-parser-deser-macros = { path = "cynic-parser-deser-macros", version = "0.11.0" }
 graphql-mocks.path = "graphql-mocks"
 
 [profile.dev]

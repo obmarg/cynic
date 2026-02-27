@@ -21,9 +21,9 @@ path = "src/main.rs"
 [dependencies]
 clap = { version = "4", features = ["derive"] }
 colored = "2"
-cynic = { path = "../cynic", version = "3.12.0", features = ["http-reqwest-blocking"] }
-cynic-introspection = { path = "../cynic-introspection", version = "3.12.0" }
-cynic-querygen = { path = "../cynic-querygen", version = "3.12.0" }
+cynic = { path = "../cynic", version = "3.13.0", features = ["http-reqwest-blocking"] }
+cynic-introspection = { path = "../cynic-introspection", version = "3.13.0" }
+cynic-querygen = { path = "../cynic-querygen", version = "3.13.0" }
 reqwest = { version = "0.13", features = ["blocking"] }
 thiserror = "1"
 

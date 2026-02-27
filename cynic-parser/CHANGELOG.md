@@ -9,6 +9,20 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.11.0 - 2026-02-27
+
+### New Features
+
+- Added support for most of the GraphQL 2025 spec:
+  - Added support for parsing schema coordinates (#1185)
+  - Descriptions in executable documents (#1182)
+  - Added `InputObjectDefinition::is_one_of` (#1176)
+
+### Changes
+
+- Fix some lints in lalrpop output (#1173)
+- Bump MSRV to 1.85 (#1172)
+
 ## v0.10.0 - 2025-08-19
 
 ### New Features

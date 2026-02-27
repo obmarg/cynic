@@ -8,18 +8,43 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
-- Update `reqwest` to 0.13
+## v3.13.0 - 2026-02-27
 
-### New features
+Note that this is the last release that will be pushed to github - development
+of cynic will continue over on
+[codeberg.org/obmarg/cynic](https://codeberg.org/obmarg/cynic).
 
-- The `QueryFragment` derive now supports the `rename_all` attribute
+### New Features
+
+- Feature flags are now supported on on arguments (#1181)
+- An `InputObject` on a `oneOf` type will automatically skip serializing all of
+  it's null fields (#1179)
+- `InputObject` can now be derived on enums for oneOf inputs (#1174)
+- `Operation` is now `Clone` (#1170)
+- The reqwest integation now accepts `&Operation` as well as `Operation` (#1169)
+- The `QueryFragment` derive now supports the `rename_all` attribute (#1167)
+- add `@oneOf` support to introspection (#1177)
+- oneOf input objects are now supported in the in the generator (#1175)
+- cynic-introspection now supports additions from the 2025 spec (#1180)
 - `cynic-querygen` now has a `field_overrides` option that can be used to
-  customize the type of individual scalar fields in generated `QueryFragment`s.
+  customize the type of individual scalar fields in generated `QueryFragment`s (#1184)
 
 ### Bug Fixes
 
+- `cynic_querygen` has a new interface based around the `Generator` type
+  (#1187)
 - Fixed an issue with lifetime detection on nested input objects in the
   generator
+
+### Deprecations
+
+- The old intrerface to cynic_querygen has been marked deprecated
+
+### Changes
+
+- Updated reqwest to 0.13 (#1190)
+- MSRV is now 1.85 (#1172)
+- Updated rkyv to 0.8.0 (#1110)
 
 ## v3.12.0 - 2025-08-19
 
