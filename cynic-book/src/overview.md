@@ -8,17 +8,17 @@
   <a href="https://crates.io/crates/cynic"><img alt="Crate Info" src="https://img.shields.io/crates/v/cynic.svg"/></a>
   <a href="https://docs.rs/cynic/"><img alt="API Docs" src="https://img.shields.io/badge/docs.rs-cynic-green"/></a>
   <a href="https://discord.gg/Y5xDmDP"><img alt="Discord Chat" src="https://img.shields.io/discord/754633560933269544"/></a>
-  <!-- 
+  <!--
       <a href="https://blog.rust-lang.org/2020/07/16/Rust-1.45.0.html"><img alt="Rustc Version 1.45+" src="https://img.shields.io/badge/rustc-1.45%2B-lightgrey.svg"/></a>
       -->
 </p>
 
 <h4>
-  <a href="https://github.com/obmarg/cynic">Repository</a>
+  <a href="https://codeberg.org/obmarg/cynic">Repository</a>
   <span> | </span>
-  <a href="https://github.com/obmarg/cynic/tree/main/examples/examples">Examples</a>
+  <a href="https://codeberg.org/obmarg/cynic/src/branch/main/examples/examples">Examples</a>
   <span> | </span>
-  <a href="https://github.com/obmarg/cynic/blob/main/CHANGELOG.md">Changelog</a>
+  <a href="https://codeberg.org/obmarg/cynic/src/branch/main/CHANGELOG.md">Changelog</a>
 </h4>
 
 # Overview

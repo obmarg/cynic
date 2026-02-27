@@ -44,15 +44,15 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Changes
 
-- Fixed all rust 1.83 clippy lints ([#1106](https://github.com/obmarg/cynic/pull/1106))
+- Fixed all rust 1.83 clippy lints ([#1106](https://codeberg.org/obmarg/cynic/pulls/1106))
 
 ## v0.8.6 - 2024-11-28
 
 ### Bug Fixes
 
-- `Value::is_variable` now works correctly ([#1104](https://github.com/obmarg/cynic/pull/1104))
+- `Value::is_variable` now works correctly ([#1104](https://codeberg.org/obmarg/cynic/pulls/1104))
 - Fixed the `VariableValue` debug impl which was misleading
-  ([#1104](https://github.com/obmarg/cynic/pull/1104))
+  ([#1104](https://codeberg.org/obmarg/cynic/pulls/1104))
 
 ## v0.8.5 - 2024-11-27
 
@@ -69,8 +69,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Bug Fixes
 
-- Removed erroneous error code from reports ([#1099](https://github.com/obmarg/cynic/pull/1099))
-- Removed some stray dbg! calls ([#1097](https://github.com/obmarg/cynic/pull/1097))
+- Removed erroneous error code from reports ([#1099](https://codeberg.org/obmarg/cynic/pulls/1099))
+- Removed some stray dbg! calls ([#1097](https://codeberg.org/obmarg/cynic/pulls/1097))
 
 ## v0.8.1 - 2024-11-11
 
@@ -114,8 +114,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Bug Fixes
 
-- Added `InputValueDefinition::default_value_span` again ([#1077](https://github.com/obmarg/cynic/pull/1077))
-- Implemented `todo!` in `ConstValue::span` ([#1076](https://github.com/obmarg/cynic/pull/1076))
+- Added `InputValueDefinition::default_value_span` again ([#1077](https://codeberg.org/obmarg/cynic/pulls/1077))
+- Implemented `todo!` in `ConstValue::span` ([#1076](https://codeberg.org/obmarg/cynic/pulls/1076))
 
 ## v0.7.0 - 2024-10-25
 
@@ -128,39 +128,39 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### New Features
 
-- Added more spans to the type system AST ([#1070](https://github.com/obmarg/cynic/pull/1070))
-- Added more spans to the executable AST ([#1069](https://github.com/obmarg/cynic/pull/1069))
-- Added `Type::definitions` for fetching the definitions associated with a type ([#1067](https://github.com/obmarg/cynic/pull/1067))
+- Added more spans to the type system AST ([#1070](https://codeberg.org/obmarg/cynic/pulls/1070))
+- Added more spans to the executable AST ([#1069](https://codeberg.org/obmarg/cynic/pulls/1069))
+- Added `Type::definitions` for fetching the definitions associated with a type ([#1067](https://codeberg.org/obmarg/cynic/pulls/1067))
 
 ### Bug Fixes
 
 - Fixed an issue where explicit lifetimes had to be used on
-  `Iter<'_, Whatever<'_>>` ([#1072](https://github.com/obmarg/cynic/pull/1072))
-- Fixed some associated type definitions on Iter ([#1068](https://github.com/obmarg/cynic/pull/1068))
+  `Iter<'_, Whatever<'_>>` ([#1072](https://codeberg.org/obmarg/cynic/pulls/1072))
+- Fixed some associated type definitions on Iter ([#1068](https://codeberg.org/obmarg/cynic/pulls/1068))
 
 ## v0.6.2 - 2024-10-24
 
 ### New Features
 
-- Added `Span::overlaps` function ([#1065](https://github.com/obmarg/cynic/pull/1065))
+- Added `Span::overlaps` function ([#1065](https://codeberg.org/obmarg/cynic/pulls/1065))
 
 ### Changes
 
-- The IdReader trait now has a lifetime parameter ([#1064](https://github.com/obmarg/cynic/pull/1064))
+- The IdReader trait now has a lifetime parameter ([#1064](https://codeberg.org/obmarg/cynic/pulls/1064))
 
 ## v0.6.1 - 2024-10-06
 
 ### Bug Fixes
 
-- Fixed some issues with block string trimming ([#1060](https://github.com/obmarg/cynic/pull/1060))
+- Fixed some issues with block string trimming ([#1060](https://codeberg.org/obmarg/cynic/pulls/1060))
 
 ## v0.6.0 - 2024-10-03
 
 ### New Features
 
-- Rework `Value` significantly ([#1048](https://github.com/obmarg/cynic/pull/1048))
-- Added `ConstValue` ([#1057](https://github.com/obmarg/cynic/pull/1057))
-- The ExecutableId & TypeSystemId traits have been changed ([#1047](https://github.com/obmarg/cynic/pull/1047))
+- Rework `Value` significantly ([#1048](https://codeberg.org/obmarg/cynic/pulls/1048))
+- Added `ConstValue` ([#1057](https://codeberg.org/obmarg/cynic/pulls/1057))
+- The ExecutableId & TypeSystemId traits have been changed ([#1047](https://codeberg.org/obmarg/cynic/pulls/1047))
 
 ### Changes
 
@@ -171,20 +171,20 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### New Features
 
 - `Description` is now Display
-  ([#1044](https://github.com/obmarg/cynic/pull/1044))
+  ([#1044](https://codeberg.org/obmarg/cynic/pulls/1044))
 
 ### Bug Fixes
 
 - `Iter::with_ids` now takes self by reference, which works better with
   `Iter` no longer being `Copy`
-  ([#1045](https://github.com/obmarg/cynic/pull/1045))
+  ([#1045](https://codeberg.org/obmarg/cynic/pulls/1045))
 
 ## v0.5.1 - 2024-09-25
 
 ### Bug Fixes
 
 - Added the `Description` convenience functions that were missed in v0.5.0
-  ([#1041](https://github.com/obmarg/cynic/pull/1041))
+  ([#1041](https://codeberg.org/obmarg/cynic/pulls/1041))
 
 ## v0.5.0 - 2024-09-25
 
@@ -193,58 +193,58 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - Integer values are now represented by `IntValue` rather than an i32.
   Although the GraphQl `Int` type is represented by `i32` this restriction is
   not specified for the grammar.
-  ([#1037](https://github.com/obmarg/cynic/pull/1037))
+  ([#1037](https://codeberg.org/obmarg/cynic/pulls/1037))
 - `Iter` is no longer `Copy` as this could cause subtle bugs. It remains
   `Clone` so you can use that if you need to.
-  ([#1036](https://github.com/obmarg/cynic/pull/1036))
+  ([#1036](https://codeberg.org/obmarg/cynic/pulls/1036))
 - `IdRange` now implements `IntoIterator` instead of directly implementing
-  `Iterator`. ([#1036](https://github.com/obmarg/cynic/pull/1036))
+  `Iterator`. ([#1036](https://codeberg.org/obmarg/cynic/pulls/1036))
 
 ### New Features
 
 - Pretty printer can now optionally sort definitions & fields in its output
-  ([#1038](https://github.com/obmarg/cynic/pull/1038))
+  ([#1038](https://codeberg.org/obmarg/cynic/pulls/1038))
 - The type ystem AST now has spans in more places
-  ([#998](https://github.com/obmarg/cynic/pull/998/files)).
+  ([#998](https://codeberg.org/obmarg/cynic/pulls/998/files)).
 
 ### Bug Fixes
 
-- Support ints larger than i32 in parser ([#1037](https://github.com/obmarg/cynic/pull/1037))
-- use Iter in more places in parser ([#1030](https://github.com/obmarg/cynic/pull/1030))
+- Support ints larger than i32 in parser ([#1037](https://codeberg.org/obmarg/cynic/pulls/1037))
+- use Iter in more places in parser ([#1030](https://codeberg.org/obmarg/cynic/pulls/1030))
 
 ## v0.4.5 - 2024-06-19
 
 ### New Features
 
 - Add `Iter::with_ids` for iterating over readers and their corresponding `Id`s
-  ([#984](https://github.com/obmarg/cynic/pull/984))
+  ([#984](https://codeberg.org/obmarg/cynic/pulls/984))
 
 ## v0.4.4 - 2024-06-10
 
 ### New Features
 
-- impl Ord for parser id types ([#981](https://github.com/obmarg/cynic/pull/981))
+- impl Ord for parser id types ([#981](https://codeberg.org/obmarg/cynic/pulls/981))
 
 ## v0.4.3 - 2024-06-04
 
 ### Bug Fixes
 
 - `FragmentSpread::fragment` had a missing lifetime
-  ([#978](https://github.com/obmarg/cynic/pull/978))
+  ([#978](https://codeberg.org/obmarg/cynic/pulls/978))
 
 ## v0.4.2 - 2024-06-04
 
 ### New Features
 
 - Added `FragmentSpread::fragment` function that looks up the named fragment
-  ([#976](https://github.com/obmarg/cynic/pull/976))
+  ([#976](https://codeberg.org/obmarg/cynic/pulls/976))
 
 ## v0.4.1 - 2024-05-31
 
 ### New Features
 
 - Added `Value::variables_used` to find variables used in a value
-  ([#963](https://github.com/obmarg/cynic/pull/963))
+  ([#963](https://codeberg.org/obmarg/cynic/pulls/963))
 
 ## v0.4.0 - 2024-05-2
 
@@ -258,69 +258,69 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 - All of the readers in the executable module now impl Display, allowing you
   to use them with `print!` and friends. This is hidden behind the `print`
-  feature. ([#962](https://github.com/obmarg/cynic/pull/962))
+  feature. ([#962](https://codeberg.org/obmarg/cynic/pulls/962))
 - All of the `Id` types now impl `Hash`, `PartialEq`, `Eq` & `Debug`
-  ([#961](https://github.com/obmarg/cynic/pull/961))
+  ([#961](https://codeberg.org/obmarg/cynic/pulls/961))
 - All of the readers now have an `id` function that allows you to retreive an
-  `Id` for that reader. ([#959](https://github.com/obmarg/cynic/pull/959))
+  `Id` for that reader. ([#959](https://codeberg.org/obmarg/cynic/pulls/959))
 - `Iter` now exposes a function `ids` that allows you to retrieve the underlying
-  `IdRange` ([#959](https://github.com/obmarg/cynic/pull/959))
+  `IdRange` ([#959](https://codeberg.org/obmarg/cynic/pulls/959))
 
 ### Bug Fixes
 
 - Fixed a lot of bad formatting in the pretty printing of schema documents
-  ([#957](https://github.com/obmarg/cynic/pull/957))
+  ([#957](https://codeberg.org/obmarg/cynic/pulls/957))
 - Pretty printing will now add whitespace between fields & arguments that have
-  a docstring ([#954](https://github.com/obmarg/cynic/pull/954))
+  a docstring ([#954](https://codeberg.org/obmarg/cynic/pulls/954))
 
 ### Changes
 
-- update rust crate logos to 0.14 ([#942](https://github.com/obmarg/cynic/pull/942))
+- update rust crate logos to 0.14 ([#942](https://codeberg.org/obmarg/cynic/pulls/942))
 
 ## v0.2.7 - 2024-05-14
 
 ### New Features
 
 - Updated most functions to return the named type `Iter` rather than
-  `impl ExactSizedIterator` ([#945](https://github.com/obmarg/cynic/pull/945))
+  `impl ExactSizedIterator` ([#945](https://codeberg.org/obmarg/cynic/pulls/945))
 - All the readers now `impl Debug`
-  ([#923](https://github.com/obmarg/cynic/pull/923))
+  ([#923](https://codeberg.org/obmarg/cynic/pulls/923))
 
 ### Bug Fixes
 
 - Parser now errors on an invalid directive location instead of panicing
-  ([#948](https://github.com/obmarg/cynic/pull/948))
+  ([#948](https://codeberg.org/obmarg/cynic/pulls/948))
 - Pretty printing now formats long arguments correctly
-  ([#947](https://github.com/obmarg/cynic/pull/947))
+  ([#947](https://codeberg.org/obmarg/cynic/pulls/947))
 
 ## [v0.2.6](https://github.com/obmarg/cynic/compare/cynic-parser-v0.2.5...cynic-parser-v0.2.6) - 2024-04-16
 
 ### Features
 
-- implement PartialEq for Type and Value ([#924](https://github.com/obmarg/cynic/pull/924))
+- implement PartialEq for Type and Value ([#924](https://codeberg.org/obmarg/cynic/pulls/924))
 
 ## [v0.2.5](https://github.com/obmarg/cynic/compare/cynic-parser-v0.2.4...cynic-parser-v0.2.5) - 2024-04-15
 
 ### Fixes
 
 - Directives on schema definitions are now parsed correctly
-  ([#921](https://github.com/obmarg/cynic/pull/921))
+  ([#921](https://codeberg.org/obmarg/cynic/pulls/921))
 - Schema extensions without operation definitions are now parsed correctly
-  ([#921](https://github.com/obmarg/cynic/pull/921))
+  ([#921](https://codeberg.org/obmarg/cynic/pulls/921))
 
 ## [v0.2.4](https://github.com/obmarg/cynic/compare/cynic-parser-v0.2.3...cynic-parser-v0.2.4) - 2024-04-15
 
 ### Fixes
 
 - TypeSystemDocument::definitions() now returns an ExactSizeIterator
-  ([#919](https://github.com/obmarg/cynic/pull/919))
+  ([#919](https://codeberg.org/obmarg/cynic/pulls/919))
 
 ## [0.2.3](https://github.com/obmarg/cynic/compare/cynic-parser-v0.2.2...cynic-parser-v0.2.3) - 2024-04-15
 
 ### Fixes
 
 - Pretty printing output is now significantly improved, but still not perfect
-  ([#916](https://github.com/obmarg/cynic/pull/916))
+  ([#916](https://codeberg.org/obmarg/cynic/pulls/916))
 
 ## v0.2.2 - 2024-04-12
 

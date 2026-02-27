@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/obmarg/cynic/raw/main/logo.png" width="150"/>
+  <img src="https://codeberg.org/obmarg/cynic/raw/branch/main/logo.png" width="150"/>
   <h1>cynic-cli</h1>
 
   <p>
@@ -15,7 +15,7 @@
   <h4>
     <a href="https://cynic-rs.dev">Documentation</a>
     <span> | </span>
-    <a href="https://github.com/obmarg/cynic/blob/main/CHANGELOG.md">Changelog</a>
+    <a href="https://codeberg.org/obmarg/cynic/src/branch/main/CHANGELOG.md">Changelog</a>
   </h4>
 </div>
 
@@ -68,21 +68,21 @@ Arguments:
 Options:
   -H, --header <HEADERS>
           Any headers to send with the introspection request
-          
+
           These should be in HTTP format e.g. `-H "Authorization: Bearer a_token_123"`
 
   -o, --output <OUTPUT>
           The name of a file we should output the schema into.
-          
+
           By default we print to stdout.
 
       --server-version <SERVER_VERSION>
           The version of the GraphQL specificaiton that the remote GraphQL server implements
-          
+
           Different versions of GraphQL expose different fields via introspection, so we need to know which set of fields to ask for.
-          
+
           By default we run an additional query to figure out what the server we're talking to supports.
-          
+
           [default: auto]
 
           Possible values:

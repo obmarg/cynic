@@ -1,6 +1,6 @@
 # Contributing
 
-If you want to contribute to cynic, that's great!  There's plenty of
+If you want to contribute to cynic, that's great! There's plenty of
 improvements to make, features that still need built and probably a bug or two
 hiding in there.
 
@@ -13,7 +13,7 @@ There's a few different ways to contribute:
   please [create an issue][NewIssue] to discuss or send a message [on
   discord][Discord].
 - If you'd like to contribute to an existing issue feel free to comment on the
-  issue and let us know.  If anything isn't clear someone will be happy to
+  issue and let us know. If anything isn't clear someone will be happy to
   explain (the project is still fairly new, and I have treated the issue
   tracker like a notepad occasionally, sorry about that 😬).
 - If you'd like to contribute but you're not sure how:
@@ -30,10 +30,10 @@ There's a few different ways to contribute:
 
 ## Getting Help
 
-If you have any questions about how to do anything or otherwise need help, please just ask.  
+If you have any questions about how to do anything or otherwise need help, please just ask.
 You can do this by:
 
-1. [Joining the discord server][Discord]
+1. Joining the IRC server (see the [README] for instructions)
 2. [Asking in Discussions][Discussions]
 
 ## Coding Guidelines
@@ -51,9 +51,8 @@ You can do this by:
    context around & reason for the changes.
 5. A maintainer will review the PR as soon as possible, and once it is approved will merge
    and make a release.
-   
+
 [COC]: ./CODE_OF_CONDUCT.md
-[Discord]: https://discord.gg/Y5xDmDP
-[Discussions]: https://github.com/obmarg/cynic/discussions/new
-[GFI]: https://github.com/obmarg/cynic/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
-[Milestones]: https://github.com/obmarg/cynic/milestones
+[README]: ./README.md
+[GFI]: https://codeberg.org/obmarg/cynic/issues?q=&type=all&sort=relevance&labels=1220972&state=open&milestone=0&project=0&assignee=0&poster=0
+[Milestones]: https://codeberg.org/obmarg/cynic/milestones

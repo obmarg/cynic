@@ -11,13 +11,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### New Features
 
-- `Vec<T>::deserialize` now handles null coercion ([#1100](https://github.com/obmarg/cynic/pull/1100))
+- `Vec<T>::deserialize` now handles null coercion ([#1100](https://codeberg.org/obmarg/cynic/pulls/1100))
 
 ## v0.8.3 - 2024-11-12
 
 ### New Features
 
-- Implement `rename_all` in derive(ValueDeserialize) ([#1094](https://github.com/obmarg/cynic/pull/1094))
+- Implement `rename_all` in derive(ValueDeserialize) ([#1094](https://codeberg.org/obmarg/cynic/pulls/1094))
 
 ### Fixes
 
@@ -27,7 +27,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Bug Fixes
 
-- Option fields now always default to None if they are missing ([#1092](https://github.com/obmarg/cynic/pull/1092))
+- Option fields now always default to None if they are missing ([#1092](https://codeberg.org/obmarg/cynic/pulls/1092))
 
 ## v0.8.1 - 2024-11-12
 

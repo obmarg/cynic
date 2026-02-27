@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/obmarg/cynic/raw/main/logo.png" width="150"/>
+  <img src="https://codeberg.org/obmarg/cynic/raw/branch/main/logo.png" width="150"/>
   <h1>Cynic</h1>
 
   <p>
@@ -15,9 +15,9 @@
   <h4>
     <a href="https://cynic-rs.dev">Documentation</a>
     <span> | </span>
-    <a href="https://github.com/obmarg/cynic/tree/main/examples/examples">Examples</a>
+    <a href="https://codeberg.org/obmarg/cynic/src/branch/main/examples/examples">Examples</a>
     <span> | </span>
-    <a href="https://github.com/obmarg/cynic/blob/main/CHANGELOG.md">Changelog</a>
+    <a href="https://codeberg.org/obmarg/cynic/src/branch/main/CHANGELOG.md">Changelog</a>
   </h4>
 </div>
 
@@ -98,4 +98,4 @@ IRC using any of these options:
 [5]: https://serde.rs
 [6]: https://crates.io/crates/cynic-cli
 [7]: https://crates.io/crates/cynic-introspection
-[8]: https://github.com/obmarg/graphql-ws-client
+[8]: https://codeberg.org/obmarg/graphql-ws-client

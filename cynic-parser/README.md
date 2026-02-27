@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/obmarg/cynic/raw/main/logo.png" width="150"/>
+  <img src="https://codeberg.org/obmarg/cynic/raw/branch/main/logo.png" width="150"/>
   <h1>cynic-parser</h1>
 
   <p>
@@ -15,9 +15,7 @@
   <h4>
     <a href="https://docs.rs/cynic-parser">Documentation</a>
     <span> | </span>
-    <a href="https://github.com/obmarg/cynic/tree/main/cynic-parser/examples/examples">Examples</a>
-    <span> | </span>
-    <a href="https://github.com/obmarg/cynic/blob/main/cynic-parser/CHANGELOG.md">Changelog</a>
+    <a href="https://codeberg.org/obmarg/cynic/src/branch/main/cynic-parser/CHANGELOG.md">Changelog</a>
   </h4>
 </div>
 

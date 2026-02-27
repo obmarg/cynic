@@ -79,18 +79,18 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Bug Fixes
 
-- Fields named `str` are now supported ([#1108](https://github.com/obmarg/cynic/pull/1108))
+- Fields named `str` are now supported ([#1108](https://codeberg.org/obmarg/cynic/pulls/1108))
 
 ### Changes
 
-- Fixed all rust 1.83 clippy lints ([#1106](https://github.com/obmarg/cynic/pull/1106))
+- Fixed all rust 1.83 clippy lints ([#1106](https://codeberg.org/obmarg/cynic/pulls/1106))
 
 ## v3.9.0 - 2024-11-11
 
 ### Changes
 
 - Bumped `cynic-parser` dependency
-- Removed dependency on `counter` ([#1027](https://github.com/obmarg/cynic/pull/1027))
+- Removed dependency on `counter` ([#1027](https://codeberg.org/obmarg/cynic/pulls/1027))
 
 ### Changes
 
@@ -101,16 +101,16 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### New Features
 
 - Added `OperationBuilder::build_with_variables_inlined` which can be used to
-  build a query string with variables inlined ([#1012](https://github.com/obmarg/cynic/pull/1012))
+  build a query string with variables inlined ([#1012](https://codeberg.org/obmarg/cynic/pulls/1012))
 - Added `QueryVariableLiterals`, a trait & derive macro that can be used to
-  enable dynamic fetching of variables ([#1009](https://github.com/obmarg/cynic/pull/1009))
+  enable dynamic fetching of variables ([#1009](https://codeberg.org/obmarg/cynic/pulls/1009))
 
 ### Bug Fixes
 
 - The generator now consistently renames arguments that share names with rust
-  keywords ([#1005](https://github.com/obmarg/cynic/pull/1005))
+  keywords ([#1005](https://codeberg.org/obmarg/cynic/pulls/1005))
 - The generator will no longer panic when using a fragment with an interface
-  as its type condition ([#994](https://github.com/obmarg/cynic/pull/994))
+  as its type condition ([#994](https://codeberg.org/obmarg/cynic/pulls/994))
 
 ### Bug Fixes
 
@@ -121,7 +121,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Changes
 
 - update Cargo.toml dependencies
-- update rust crate trycmd to 0.15 ([#971](https://github.com/obmarg/cynic/pull/971))
+- update rust crate trycmd to 0.15 ([#971](https://codeberg.org/obmarg/cynic/pulls/971))
 
 ## v3.7.2 - 2024-05-22
 
@@ -134,40 +134,40 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Bug Fixes
 
 - Schema file should no longer cause clippy warnings if `clippy::nursery` is on.
-  ([#951](https://github.com/obmarg/cynic/pull/951))
+  ([#951](https://codeberg.org/obmarg/cynic/pulls/951))
 
-## [v3.7.0](https://github.com/obmarg/cynic/compare/v3.6.1...v3.7.0) - 2024-04-28
+## [v3.7.0](https://codeberg.org/obmarg/cynic/compare/v3.6.1...v3.7.0) - 2024-04-28
 
 ### New Features
 
 - Users of the `reqwest` integration can now control the type used for error
-  extensions ([#928](https://github.com/obmarg/cynic/pull/928))
+  extensions ([#928](https://codeberg.org/obmarg/cynic/pulls/928))
 
 ### Changes
 
 - MSRV is now officially 1.72 (although it was unofficially 1.72 before)
 
-## [v3.6.1](https://github.com/obmarg/cynic/compare/v3.6.0...v3.6.1) - 2024-04-15
+## [v3.6.1](https://codeberg.org/obmarg/cynic/compare/v3.6.0...v3.6.1) - 2024-04-15
 
 ### Bug Fixes
 
 - Fixed a regresion in 3.6.0: schemas with directives on the `schema`
   definition will now parse
 
-## [3.6.0](https://github.com/obmarg/cynic/compare/v3.5.1...v3.6.2) - 2024-04-12
+## [3.6.0](https://codeberg.org/obmarg/cynic/compare/v3.5.1...v3.6.2) - 2024-04-12
 
 ### Bug Fixes
 
 - Fixed an issue where `derive(Scalar)` would fail on types with a `serialize`
   function that was not `serde::Serialize::serialize`
-  ([#909](https://github.com/obmarg/cynic/pull/909))
+  ([#909](https://codeberg.org/obmarg/cynic/pulls/909))
 
 ### Changes
 
 - Improved errors when users use a derive on the wrong kind of GraphQL type
-  ([#889](https://github.com/obmarg/cynic/pull/889))
+  ([#889](https://codeberg.org/obmarg/cynic/pulls/889))
 - `cynic-codegen` now uses `cynic-parser` instead of `graphql-parser`
-  ([#824](https://github.com/obmarg/cynic/pull/824))
+  ([#824](https://codeberg.org/obmarg/cynic/pulls/824))
 
 ## v3.5.1 - 2024-04-04
 
@@ -679,7 +679,7 @@ This release is only of the `cynic` crate - other crates remain at 0.13.1
 
 There are a number of breaking changes here, though they shouldn't require too
 much work for users to update. An example of an upgrade can be found
-[here](https://github.com/obmarg/git-lead-time/pull/1).
+[here](https://codeberg.org/obmarg/git-lead-time/pull/1).
 
 - The `cynic::Scalar` derive has some new requirements:
   - You should now derive (or otherwise implement) `serde::Serialize` for your
@@ -722,7 +722,7 @@ much work for users to update. An example of an upgrade can be found
 
 - Support for building and decoding subscription queries.
 - Alpha quality support for subscriptions over websockets with
-  [`graphql-ws-client`](https://github.com/obmarg/graphql-ws-client).
+  [`graphql-ws-client`](https://codeberg.org/obmarg/graphql-ws-client).
 
 ### Deprecated
 
