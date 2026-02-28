@@ -1,3 +1,7 @@
+> [!IMPORTANT]  
+> This repository has been migrated to [Codeberg](https://codeberg.org/obmarg/cynic).
+
+
 <div align="center">
   <img src="https://codeberg.org/obmarg/cynic/raw/branch/main/logo.png" width="150"/>
   <h1>Cynic</h1>
