@@ -34,7 +34,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Run release-plz
-        uses: MarcoIeni/release-plz-action@ca8762285a5dc0c220cb4a7896c9986ff6c97ecf
+        uses: MarcoIeni/release-plz-action@d5a6bf3d7c56085e031917fe2e0fafef467af409
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
