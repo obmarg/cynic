@@ -4,6 +4,8 @@ expression: parsed.to_sdl()
 ---
 scalar JSON
 
+scalar DateTime
+
 type Query {
   testStruct: TestStruct
   myUnion: MyUnionType
@@ -17,6 +19,7 @@ type TestStruct {
   optNested: Nested
   dessert: Dessert
   json: JSON
+  date: DateTime
 }
 
 union MyUnionType = Nested | TestStruct
