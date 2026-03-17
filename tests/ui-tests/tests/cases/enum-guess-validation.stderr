@@ -3,11 +3,3 @@ error: Could not find a type named `Desseqt` in the schema
    |
 10 |     graphql_type = "Desseqt"
    |                    ^^^^^^^^^
-
-warning: variant `ICE_CREAM` should have an upper camel case name
-  --> tests/cases/enum-guess-validation.rs:14:5
-   |
-14 |     ICE_CREAM,
-   |     ^^^^^^^^^ help: convert the identifier to upper camel case: `IceCream`
-   |
-   = note: `#[warn(non_camel_case_types)]` on by default
